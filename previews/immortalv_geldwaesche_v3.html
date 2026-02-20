@@ -1,0 +1,1714 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IMMORTAL V — Dark Market v3</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════
+   IMMORTAL V — DARK MARKET  v3
+   Aesthetic: Underground luxury — noir meets cyberpunk
+   Palette: Deep navy / near-black with electric cyan accents
+═══════════════════════════════════════════════════════ */
+
+:root {
+  --ink:      #080a10;
+  --deep:     #0c0f18;
+  --surface:  #111520;
+  --raised:   #171d2e;
+  --high:     #1e2540;
+  --rim:      rgba(255,255,255,0.05);
+  --rim2:     rgba(255,255,255,0.09);
+  --rim3:     rgba(255,255,255,0.14);
+
+  --cyan:     #00e5ff;
+  --cyan2:    #00b8d9;
+  --teal:     #00bfa5;
+  --lime:     #76ff03;
+  --amber:    #ffab00;
+  --coral:    #ff5252;
+  --violet:   #7c4dff;
+
+  --txt:      #c8d6f0;
+  --txt2:     #4a5a7a;
+  --txt3:     #2a3450;
+  --glow-c:   rgba(0,229,255,0.15);
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--ink);
+  color: var(--txt);
+  font-family: 'Space Grotesk', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  overflow-x: hidden;
+}
+
+/* ── SCANLINES OVERLAY ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.03) 2px,
+    rgba(0,0,0,0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ── AMBIENT GLOW ── */
+.ambient {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+}
+.ambient::before {
+  content: '';
+  position: absolute;
+  top: -200px; left: -200px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(0,229,255,0.04) 0%, transparent 70%);
+  animation: drift1 18s ease-in-out infinite alternate;
+}
+.ambient::after {
+  content: '';
+  position: absolute;
+  bottom: -200px; right: -200px;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(124,77,255,0.04) 0%, transparent 70%);
+  animation: drift2 14s ease-in-out infinite alternate;
+}
+@keyframes drift1 { 0%{transform:translate(0,0);} 100%{transform:translate(80px,60px);} }
+@keyframes drift2 { 0%{transform:translate(0,0);} 100%{transform:translate(-60px,-80px);} }
+
+/* ── OUTER SHELL ── */
+.shell {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 940px;
+  animation: shellIn .5s cubic-bezier(.16,1,.3,1) forwards;
+}
+@keyframes shellIn { from{opacity:0;transform:translateY(20px) scale(.97);} to{opacity:1;transform:none;} }
+
+/* ── SERVER BRAND ── */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding: 0 4px;
+}
+.brand-icon {
+  width: 44px; height: 44px;
+  background: linear-gradient(135deg, var(--cyan2), var(--violet));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  box-shadow: 0 0 20px rgba(0,229,255,0.3);
+  flex-shrink: 0;
+}
+.brand-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px;
+  letter-spacing: 5px;
+  color: #fff;
+}
+.brand-name em {
+  color: var(--cyan);
+  font-style: normal;
+}
+.brand-sub {
+  font-size: 9px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--txt2);
+  margin-top: 1px;
+}
+.brand-version {
+  margin-left: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--txt2);
+  background: var(--surface);
+  border: 1px solid var(--rim2);
+  border-radius: 5px;
+  padding: 4px 10px;
+}
+
+/* ── MAIN PANEL ── */
+.panel {
+  background: var(--surface);
+  border-radius: 18px;
+  border: 1px solid var(--rim2);
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px rgba(0,229,255,0.04),
+    0 60px 120px rgba(0,0,0,0.8),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+}
+
+/* ── TOP STRIPE ── */
+.panel-stripe {
+  height: 2px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--cyan2) 20%,
+    var(--cyan) 50%,
+    var(--violet) 80%,
+    transparent 100%
+  );
+  opacity: 0.7;
+}
+
+/* ── HEADER ── */
+.hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 24px;
+  border-bottom: 1px solid var(--rim);
+  gap: 12px;
+}
+.hdr-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.hdr-eyebrow {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--cyan);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.live-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--lime);
+  box-shadow: 0 0 6px var(--lime);
+  animation: pulse-dot 1.6s ease-in-out infinite;
+}
+@keyframes pulse-dot { 0%,100%{opacity:1;box-shadow:0 0 6px var(--lime);} 50%{opacity:.4;box-shadow:0 0 2px var(--lime);} }
+.hdr-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 2px;
+  color: #fff;
+}
+.hdr-divider {
+  width: 1px; height: 24px;
+  background: var(--rim2);
+}
+.hdr-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.bal-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--raised);
+  border: 1px solid var(--rim2);
+  border-radius: 8px;
+  padding: 7px 13px;
+  transition: border-color .2s;
+  cursor: default;
+}
+.bal-chip:hover { border-color: var(--rim3); }
+.bal-icon { font-size: 14px; }
+.bal-data {}
+.bal-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--amber);
+}
+.bal-val.is-clean { color: var(--lime); }
+.bal-label {
+  font-size: 8px;
+  color: var(--txt2);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-top: 1px;
+}
+.x-btn {
+  width: 30px; height: 30px;
+  border-radius: 7px;
+  background: rgba(255,82,82,.1);
+  border: 1px solid rgba(255,82,82,.2);
+  color: var(--coral);
+  font-size: 13px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+  flex-shrink: 0;
+}
+.x-btn:hover { background: rgba(255,82,82,.2); border-color: rgba(255,82,82,.4); }
+
+/* ── TWO-COLUMN LAYOUT ── */
+.layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: 520px;
+}
+
+/* ── LEFT SIDEBAR (Nav) ── */
+.sidebar {
+  background: var(--deep);
+  border-right: 1px solid var(--rim);
+  padding: 18px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.nav-label {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--txt3);
+  padding: 0 8px;
+  margin: 10px 0 6px;
+}
+.nav-label:first-child { margin-top: 0; }
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 9px;
+  background: none;
+  border: none;
+  color: var(--txt2);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .15s;
+  text-align: left;
+  width: 100%;
+  position: relative;
+}
+.nav-btn:hover { color: var(--txt); background: rgba(255,255,255,.03); }
+.nav-btn.active {
+  color: #fff;
+  background: rgba(0,229,255,.08);
+  border: 1px solid rgba(0,229,255,.15);
+}
+.nav-btn.active .nav-icon { color: var(--cyan); }
+.nav-icon { font-size: 15px; width: 20px; text-align: center; flex-shrink: 0; }
+.nav-text { flex: 1; }
+.nav-badge {
+  font-size: 9px;
+  font-weight: 700;
+  background: var(--coral);
+  color: #fff;
+  border-radius: 4px;
+  padding: 1px 5px;
+  display: none;
+}
+.nav-badge.show { display: block; }
+.nav-arrow { font-size: 9px; color: var(--txt3); transition: transform .15s; }
+.nav-btn.active .nav-arrow { transform: translateX(2px); color: var(--cyan); }
+
+/* sidebar stats */
+.sidebar-stats {
+  margin-top: auto;
+  padding: 12px;
+  background: var(--surface);
+  border-radius: 10px;
+  border: 1px solid var(--rim);
+}
+.ss-title { font-size: 8px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--txt2); margin-bottom: 10px; }
+.ss-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; }
+.ss-row .sk { font-size: 10px; color: var(--txt2); }
+.ss-row .sv { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--txt); font-weight: 500; }
+.ss-row .sv.cyan { color: var(--cyan); }
+.ss-row .sv.lime { color: var(--lime); }
+.ss-row .sv.coral { color: var(--coral); }
+
+/* level orb sidebar */
+.level-orb-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14px 10px;
+  background: var(--surface);
+  border-radius: 10px;
+  border: 1px solid var(--rim);
+  margin-bottom: 4px;
+}
+.level-ring {
+  position: relative;
+  width: 72px; height: 72px;
+  margin-bottom: 10px;
+}
+.level-ring svg {
+  width: 100%; height: 100%;
+  transform: rotate(-90deg);
+}
+.level-ring .ring-bg { stroke: rgba(255,255,255,0.06); fill: none; stroke-width: 4; }
+.level-ring .ring-fill {
+  fill: none;
+  stroke: url(#ringGrad);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-dasharray: 188;
+  stroke-dashoffset: 188;
+  transition: stroke-dashoffset .8s cubic-bezier(.34,1.56,.64,1);
+}
+.level-ring .ring-num {
+  position: absolute;
+  inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  font-family: 'Bebas Neue', sans-serif;
+}
+.ring-num-big { font-size: 24px; color: #fff; line-height: 1; }
+.ring-num-lbl { font-size: 7px; color: var(--txt2); letter-spacing: 1px; text-transform: uppercase; }
+.level-title { font-size: 11px; font-weight: 700; color: var(--txt); margin-bottom: 3px; }
+.level-fail {
+  font-size: 9px;
+  color: var(--coral);
+  background: rgba(255,82,82,.1);
+  border: 1px solid rgba(255,82,82,.18);
+  border-radius: 4px;
+  padding: 2px 8px;
+  margin-bottom: 8px;
+}
+.level-xpbar-wrap { width: 100%; }
+.xp-labels { display: flex; justify-content: space-between; font-size: 8px; color: var(--txt2); font-family: 'JetBrains Mono', monospace; margin-bottom: 4px; }
+.xpbar2 { height: 3px; background: var(--rim); border-radius: 2px; overflow: hidden; }
+.xpfill2 { height: 100%; background: linear-gradient(90deg, var(--cyan2), var(--cyan)); border-radius: 2px; transition: width .6s cubic-bezier(.34,1.56,.64,1); }
+
+/* ── MAIN CONTENT ── */
+.main {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 22px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rim2) transparent;
+}
+.content::-webkit-scrollbar { width: 4px; }
+.content::-webkit-scrollbar-thumb { background: var(--rim2); border-radius: 2px; }
+
+/* ── PAGE TITLE ── */
+.page-hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+.page-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 2px;
+  color: #fff;
+}
+.page-sub { font-size: 10px; color: var(--txt2); margin-top: 2px; }
+
+/* ── SECTIONS ── */
+.sec { display: none; animation: secIn .25s ease forwards; }
+.sec.on { display: block; }
+@keyframes secIn { from{opacity:0;transform:translateX(8px);} to{opacity:1;transform:none;} }
+
+/* ── GRID 3 SERVICES ── */
+.svc-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.svc-card {
+  background: var(--raised);
+  border: 1px solid var(--rim);
+  border-radius: 12px;
+  padding: 14px;
+  cursor: pointer;
+  transition: all .2s;
+  position: relative;
+  overflow: hidden;
+}
+.svc-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  transition: border-color .2s;
+  pointer-events: none;
+}
+.svc-card:hover { background: var(--high); }
+.svc-card:hover::after { border-color: var(--rim3); }
+.svc-card.active { background: rgba(0,229,255,.06); }
+.svc-card.active::after { border-color: rgba(0,229,255,.3); }
+.svc-card.locked { opacity: .35; cursor: not-allowed; }
+.svc-selected-dot {
+  position: absolute;
+  top: 10px; right: 12px;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 8px var(--cyan);
+  opacity: 0; transition: opacity .2s;
+}
+.svc-card.active .svc-selected-dot { opacity: 1; }
+.svc-emoji { font-size: 22px; margin-bottom: 9px; }
+.svc-name { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
+.svc-desc { font-size: 10px; color: var(--txt2); line-height: 1.4; margin-bottom: 10px; }
+.svc-meta { display: flex; align-items: center; justify-content: space-between; }
+.svc-fee {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--coral);
+}
+.svc-tags { display: flex; gap: 4px; }
+.pill {
+  font-size: 8px; font-weight: 700; letter-spacing: .5px;
+  padding: 2px 7px; border-radius: 20px;
+  text-transform: uppercase;
+}
+.pill-cyan   { background: rgba(0,229,255,.1); color: var(--cyan); border: 1px solid rgba(0,229,255,.2); }
+.pill-lime   { background: rgba(118,255,3,.1); color: var(--lime); border: 1px solid rgba(118,255,3,.2); }
+.pill-amber  { background: rgba(255,171,0,.1); color: var(--amber); border: 1px solid rgba(255,171,0,.2); }
+.pill-violet { background: rgba(124,77,255,.12); color: #ab8fff; border: 1px solid rgba(124,77,255,.25); }
+.pill-coral  { background: rgba(255,82,82,.1); color: var(--coral); border: 1px solid rgba(255,82,82,.2); }
+
+/* ── ROW GRID (amount + frak) ── */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+
+/* ── INPUT CARD ── */
+.input-card {
+  background: var(--raised);
+  border: 1px solid var(--rim);
+  border-radius: 12px;
+  padding: 14px;
+}
+.ic-label {
+  font-size: 9px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--txt2); margin-bottom: 10px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.ic-label .il-right {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--amber);
+  font-weight: 400;
+}
+.ic-inp-row { display: flex; gap: 6px; margin-bottom: 8px; }
+.ic-inp {
+  flex: 1;
+  background: var(--deep);
+  border: 1px solid var(--rim2);
+  border-radius: 8px;
+  color: var(--txt);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  padding: 9px 12px;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+  width: 100%;
+}
+.ic-inp:focus {
+  border-color: var(--cyan2);
+  box-shadow: 0 0 0 3px rgba(0,229,255,.08);
+}
+.ic-inp::placeholder { color: var(--txt3); font-size: 11px; }
+.max-pill {
+  background: rgba(0,229,255,.1);
+  border: 1px solid rgba(0,229,255,.2);
+  border-radius: 7px;
+  color: var(--cyan);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 9px 13px;
+  cursor: pointer;
+  transition: all .2s;
+  white-space: nowrap;
+}
+.max-pill:hover { background: rgba(0,229,255,.18); }
+.quick-row { display: flex; gap: 4px; margin-bottom: 8px; }
+.qpill {
+  flex: 1;
+  background: var(--deep);
+  border: 1px solid var(--rim);
+  border-radius: 6px;
+  color: var(--txt2);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  padding: 5px 2px;
+  cursor: pointer;
+  transition: all .15s;
+  text-align: center;
+}
+.qpill:hover { border-color: var(--rim2); color: var(--txt); background: var(--raised); }
+/* range */
+input[type=range] {
+  width: 100%; -webkit-appearance: none; height: 3px;
+  background: linear-gradient(90deg, var(--cyan2) var(--p,0%), var(--rim) var(--p,0%));
+  outline: none; border-radius: 2px; cursor: pointer;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 13px; height: 13px; border-radius: 50%;
+  background: var(--cyan); border: 2px solid var(--surface);
+  box-shadow: 0 0 8px rgba(0,229,255,.5);
+  transition: transform .15s;
+}
+input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+/* FRAK SLIDER */
+.frak-val-display {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--amber);
+  text-align: center;
+  margin-bottom: 8px;
+  line-height: 1;
+}
+.frak-val-sub { font-size: 9px; color: var(--txt2); text-align: center; margin-bottom: 10px; }
+
+/* ── COOLDOWN CARD ── */
+.cd-card {
+  background: rgba(255,171,0,.04);
+  border: 1px solid rgba(255,171,0,.15);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 12px;
+  display: none;
+}
+.cd-card.on { display: block; animation: fadeUp .3s ease; }
+.cd-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.cd-lbl { font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--amber); display: flex; align-items: center; gap: 6px; }
+.cd-spin {
+  width: 8px; height: 8px;
+  border: 1.5px solid var(--amber);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.cd-time { font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 600; color: var(--amber); }
+.cd-bar { height: 4px; background: var(--rim); border-radius: 2px; overflow: hidden; }
+.cd-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--amber), #fff176);
+  border-radius: 2px;
+  transition: width .5s linear;
+  box-shadow: 0 0 6px rgba(255,171,0,.4);
+}
+
+/* ── SUMMARY CARD ── */
+.summary {
+  background: var(--raised);
+  border: 1px solid var(--rim);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+.summary-hdr {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 16px;
+  background: rgba(255,255,255,.02);
+  border-bottom: 1px solid var(--rim);
+}
+.summary-hdr-icon { font-size: 11px; color: var(--txt2); }
+.summary-hdr-txt { font-size: 8px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--txt2); }
+.sum-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 16px;
+  border-bottom: 1px solid rgba(255,255,255,.02);
+  font-size: 11px;
+}
+.sum-row:last-child { border: none; }
+.sl { color: var(--txt2); }
+.sl.r { color: var(--coral); }
+.sl.a { color: var(--amber); }
+.sv2 { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--txt); font-weight: 500; }
+.sv2.r { color: var(--coral); }
+.sv2.g { color: var(--lime); }
+.sv2.a { color: var(--amber); }
+.summary-total {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 16px;
+  background: rgba(0,229,255,.04);
+  border-top: 1px solid rgba(0,229,255,.1);
+}
+.st-label { font-size: 12px; font-weight: 600; color: var(--txt); }
+.st-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--lime);
+}
+
+/* ── WASH BUTTON ── */
+.wash-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, var(--cyan2), var(--cyan));
+  color: var(--ink);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all .25s;
+  position: relative;
+  overflow: hidden;
+}
+.wash-btn::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.25), transparent);
+  transition: left .5s ease;
+}
+.wash-btn:hover::before { left: 150%; }
+.wash-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0,229,255,.25);
+}
+.wash-btn:active { transform: translateY(0); }
+.wash-btn:disabled {
+  background: var(--high);
+  color: var(--txt2);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+.wash-btn:disabled::before { display: none; }
+
+/* ── FAIL NOTICE ── */
+.fail-notice {
+  display: flex; align-items: flex-start; gap: 10px;
+  background: rgba(255,82,82,.05);
+  border: 1px solid rgba(255,82,82,.14);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  font-size: 11px;
+  color: var(--txt2);
+}
+.fn-icon { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+.fn-ttl { font-size: 8px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--coral); margin-bottom: 3px; }
+
+/* ── PROCESS ITEMS ── */
+.proc-item {
+  background: var(--raised);
+  border: 1px solid var(--rim);
+  border-radius: 12px;
+  padding: 13px 16px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: fadeUp .25s ease;
+}
+@keyframes fadeUp { from{opacity:0;transform:translateY(8px);} to{opacity:1;transform:none;} }
+.proc-icon { font-size: 20px; flex-shrink: 0; }
+.proc-info { flex: 1; min-width: 0; }
+.proc-name { font-size: 12px; font-weight: 600; margin-bottom: 1px; }
+.proc-sub {
+  font-size: 10px; color: var(--txt2);
+  font-family: 'JetBrains Mono', monospace;
+  margin-bottom: 7px;
+}
+.proc-bar { height: 2px; background: var(--rim); border-radius: 2px; overflow: hidden; }
+.proc-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--cyan2), var(--cyan));
+  border-radius: 2px;
+  transition: width .4s;
+  box-shadow: 0 0 6px rgba(0,229,255,.4);
+}
+.proc-timer { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--cyan); flex-shrink: 0; font-weight: 500; }
+.collect-btn {
+  background: rgba(118,255,3,.1);
+  border: 1px solid rgba(118,255,3,.22);
+  border-radius: 7px;
+  color: var(--lime);
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: .5px;
+  padding: 6px 13px;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all .2s;
+  display: none;
+}
+.collect-btn:hover { background: rgba(118,255,3,.18); }
+.collect-btn.show { display: block; }
+
+/* ── ADMIN ── */
+.adm-kpi { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 14px; }
+.kpi-card {
+  background: var(--raised);
+  border: 1px solid var(--rim);
+  border-radius: 10px;
+  padding: 14px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.kpi-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  opacity: 0.4;
+}
+.kpi-val { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 600; color: var(--cyan); margin-bottom: 3px; }
+.kpi-lbl { font-size: 8px; color: var(--txt2); text-transform: uppercase; letter-spacing: 1.5px; }
+.ftable { width: 100%; border-collapse: collapse; }
+.ftable th {
+  text-align: left; padding: 8px 14px;
+  background: var(--deep);
+  font-size: 8px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--txt2); border-bottom: 1px solid var(--rim);
+}
+.ftable td { padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,.025); font-size: 11px; }
+.ftable tr:hover td { background: rgba(255,255,255,.01); }
+.fbar { height: 3px; background: var(--rim); border-radius: 2px; overflow: hidden; width: 80px; margin-top: 4px; }
+.fbar-fill { height: 100%; background: linear-gradient(90deg, var(--cyan2), var(--cyan)); }
+
+/* ── LEVEL TABLE ── */
+.ltable { width: 100%; border-collapse: collapse; }
+.ltable th { text-align: left; padding: 7px 12px; background: var(--deep); font-size: 8px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--txt2); border-bottom: 1px solid var(--rim); }
+.ltable td { padding: 9px 12px; border-bottom: 1px solid rgba(255,255,255,.025); font-size: 11px; }
+.ltable tr.cur td { background: rgba(0,229,255,.05); }
+.ltable tr.cur td:first-child { border-left: 2px solid var(--cyan); }
+.badge-lvl {
+  font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.bl-on { background: rgba(0,229,255,.12); color: var(--cyan); border: 1px solid rgba(0,229,255,.22); }
+.bl-off { background: var(--rim); color: var(--txt2); border: 1px solid transparent; }
+
+/* ── MODAL (Fehlschlag) ── */
+.modal-wrap {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.8);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 10000;
+  opacity: 0; pointer-events: none;
+  transition: opacity .3s;
+  backdrop-filter: blur(4px);
+}
+.modal-wrap.on { opacity: 1; pointer-events: all; }
+.modal {
+  background: var(--surface);
+  border: 1px solid rgba(255,82,82,.3);
+  border-radius: 18px;
+  padding: 32px 28px;
+  text-align: center;
+  max-width: 320px;
+  width: 100%;
+  transform: scale(.85) translateY(10px);
+  transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+  box-shadow: 0 0 60px rgba(255,82,82,.12), 0 30px 60px rgba(0,0,0,.6);
+  position: relative;
+  overflow: hidden;
+}
+.modal::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--coral), transparent);
+}
+.modal-wrap.on .modal { transform: scale(1) translateY(0); }
+.modal-shock { font-size: 52px; margin-bottom: 12px; animation: shockIn .5s cubic-bezier(.34,1.56,.64,1); }
+@keyframes shockIn { from{transform:scale(0) rotate(-20deg);} to{transform:scale(1) rotate(0);} }
+.modal-ttl { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 2px; color: var(--coral); margin-bottom: 8px; }
+.modal-body { font-size: 12px; color: var(--txt2); line-height: 1.6; margin-bottom: 16px; }
+.modal-amount {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--coral);
+  margin-bottom: 6px;
+  padding: 10px;
+  background: rgba(255,82,82,.07);
+  border-radius: 8px;
+}
+.modal-detail { font-size: 10px; color: var(--txt2); margin-bottom: 20px; font-family: 'JetBrains Mono', monospace; }
+.modal-close-btn {
+  background: rgba(255,82,82,.12);
+  border: 1px solid rgba(255,82,82,.25);
+  border-radius: 9px;
+  color: var(--coral);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 10px 24px;
+  cursor: pointer;
+  transition: all .2s;
+  letter-spacing: .5px;
+}
+.modal-close-btn:hover { background: rgba(255,82,82,.22); }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 18px; right: 18px;
+  background: var(--surface);
+  border: 1px solid var(--rim2);
+  border-left: 3px solid var(--lime);
+  border-radius: 10px;
+  padding: 11px 16px;
+  font-size: 12px;
+  z-index: 9998;
+  transform: translateX(130%);
+  transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+  box-shadow: 0 8px 32px rgba(0,0,0,.6);
+  max-width: 260px;
+  min-width: 200px;
+}
+.toast.on { transform: translateX(0); }
+.toast.t-err  { border-left-color: var(--coral); }
+.toast.t-warn { border-left-color: var(--amber); }
+.toast.t-info { border-left-color: var(--cyan); }
+.t-hd { font-size: 8px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--lime); margin-bottom: 2px; }
+.toast.t-err  .t-hd { color: var(--coral); }
+.toast.t-warn .t-hd { color: var(--amber); }
+.toast.t-info .t-hd { color: var(--cyan); }
+
+/* ── EMPTY STATE ── */
+.empty-state { text-align: center; padding: 36px; color: var(--txt2); font-size: 12px; }
+.es-icon { font-size: 32px; margin-bottom: 10px; opacity: .5; }
+
+/* ── SECTION LABEL ── */
+.s-label {
+  font-size: 8px; font-weight: 700; letter-spacing: 2.5px;
+  text-transform: uppercase; color: var(--txt2); margin-bottom: 10px;
+}
+
+/* ── DEMO BAR ── */
+.demo-bar {
+  background: var(--ink);
+  border-top: 1px solid var(--rim);
+  padding: 8px 20px;
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+}
+.dl { font-size: 8px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--txt2); }
+.di {
+  background: var(--raised); border: 1px solid var(--rim2);
+  border-radius: 5px; color: var(--txt); font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; padding: 4px 8px; width: 120px; outline: none;
+}
+.di:focus { border-color: var(--cyan2); }
+.di.sm { width: 55px; }
+.db {
+  background: rgba(0,229,255,.1); border: 1px solid rgba(0,229,255,.2);
+  border-radius: 5px; color: var(--cyan); font-family: 'Space Grotesk', sans-serif;
+  font-size: 10px; font-weight: 700; padding: 5px 12px; cursor: pointer;
+  letter-spacing: .5px; transition: background .2s;
+}
+.db:hover { background: rgba(0,229,255,.18); }
+.db.adm-an  { background: rgba(118,255,3,.1); color: var(--lime); border-color: rgba(118,255,3,.2); }
+.db.adm-aus { background: rgba(255,82,82,.1); color: var(--coral); border-color: rgba(255,82,82,.2); }
+
+/* ANIMATIONS */
+@keyframes shake { 0%,100%{transform:translateX(0);} 20%{transform:translateX(-8px);} 40%{transform:translateX(8px);} 60%{transform:translateX(-4px);} 80%{transform:translateX(4px);} }
+.shake { animation: shake .4s ease; }
+</style>
+</head>
+<body>
+
+<div class="ambient"></div>
+
+<!-- SVG DEFS for ring gradient -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00b8d9"/>
+      <stop offset="100%" stop-color="#00e5ff"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<!-- FAIL MODAL -->
+<div class="modal-wrap" id="fail-modal">
+  <div class="modal">
+    <div class="modal-shock">🚨</div>
+    <div class="modal-ttl">Fehlschlag!</div>
+    <div class="modal-body">Behördliche Einheit hat eingegriffen.<br>Ein Teil des Schwarzgeldes wurde konfisziert.</div>
+    <div class="modal-amount" id="modal-amt">-$0</div>
+    <div class="modal-detail" id="modal-det">Abzug: 0% — Zurückerhalten: $0</div>
+    <button class="modal-close-btn" onclick="closeModal()">Verstanden</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="t-hd" id="t-hd"></div>
+  <div id="t-bd"></div>
+</div>
+
+<div class="shell">
+
+  <!-- BRAND -->
+  <div class="brand">
+    <div class="brand-icon">💀</div>
+    <div>
+      <div class="brand-name">IMMORTAL<em>V</em></div>
+      <div class="brand-sub">Dark Market · Underground Economy</div>
+    </div>
+    <div class="brand-version">v3.0</div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-stripe"></div>
+
+    <!-- HEADER -->
+    <div class="hdr">
+      <div class="hdr-left">
+        <div>
+          <div class="hdr-eyebrow"><div class="live-dot"></div> Live-Service</div>
+          <div class="hdr-title">Geldwäsche System</div>
+        </div>
+        <div class="hdr-divider"></div>
+        <div style="font-size:10px;color:var(--txt2)">Schmutzgeld → Clean Money</div>
+      </div>
+      <div class="hdr-right">
+        <div class="bal-chip">
+          <div class="bal-icon">🧺</div>
+          <div class="bal-data">
+            <div class="bal-val" id="hdr-dirty">0</div>
+            <div class="bal-label">Schmutzgeld</div>
+          </div>
+        </div>
+        <div class="bal-chip">
+          <div class="bal-icon">💵</div>
+          <div class="bal-data">
+            <div class="bal-val is-clean" id="hdr-clean">0</div>
+            <div class="bal-label">Clean Money</div>
+          </div>
+        </div>
+        <button class="x-btn" onclick="closeUI()" title="Schließen">✕</button>
+      </div>
+    </div>
+
+    <!-- TWO-COLUMN -->
+    <div class="layout">
+
+      <!-- ── LEFT SIDEBAR ── -->
+      <div class="sidebar">
+
+        <!-- Level Ring -->
+        <div class="level-orb-wrap">
+          <div class="level-ring">
+            <svg viewBox="0 0 64 64">
+              <circle class="ring-bg" cx="32" cy="32" r="29"/>
+              <circle class="ring-fill" id="ring-fill" cx="32" cy="32" r="29"/>
+            </svg>
+            <div class="ring-num">
+              <div class="ring-num-big" id="ring-lvl">1</div>
+              <div class="ring-num-lbl">Level</div>
+            </div>
+          </div>
+          <div class="level-title" id="lv-title">Frischling</div>
+          <div class="level-fail" id="lv-fail">⚠ 25% Risiko</div>
+          <div class="level-xpbar-wrap">
+            <div class="xp-labels">
+              <span id="xp-cur">0</span>
+              <span id="xp-nxt">200 XP</span>
+            </div>
+            <div class="xpbar2"><div class="xpfill2" id="xpfill2" style="width:0%"></div></div>
+          </div>
+        </div>
+
+        <!-- Nav -->
+        <div class="nav-label">Navigation</div>
+        <button class="nav-btn active" data-nav="waschen" onclick="goNav('waschen',this)">
+          <span class="nav-icon">🧺</span>
+          <span class="nav-text">Waschen</span>
+          <span class="nav-arrow">›</span>
+        </button>
+        <button class="nav-btn" data-nav="aktiv" onclick="goNav('aktiv',this)">
+          <span class="nav-icon">⏳</span>
+          <span class="nav-text">Aktive Prozesse</span>
+          <span class="nav-badge" id="nav-badge">0</span>
+          <span class="nav-arrow">›</span>
+        </button>
+        <button class="nav-btn" data-nav="level" onclick="goNav('level',this)">
+          <span class="nav-icon">📊</span>
+          <span class="nav-text">Level & Perks</span>
+          <span class="nav-arrow">›</span>
+        </button>
+        <button class="nav-btn" id="nav-admin" data-nav="admin" onclick="goNav('admin',this)" style="display:none">
+          <span class="nav-icon">🔐</span>
+          <span class="nav-text">Admin Panel</span>
+          <span class="nav-arrow">›</span>
+        </button>
+
+        <!-- Quick Stats -->
+        <div class="nav-label">Session</div>
+        <div class="sidebar-stats">
+          <div class="ss-title">Statistiken</div>
+          <div class="ss-row"><span class="sk">Gewaschen</span><span class="sv cyan" id="ss-washed">$0</span></div>
+          <div class="ss-row"><span class="sk">Fehlschläge</span><span class="sv coral" id="ss-fails">0</span></div>
+          <div class="ss-row"><span class="sk">Frak verdient</span><span class="sv lime" id="ss-frak">$0</span></div>
+        </div>
+      </div>
+
+      <!-- ── MAIN CONTENT ── -->
+      <div class="main">
+        <div class="content">
+
+          <!-- ═══════ WASCHEN ═══════ -->
+          <div class="sec on" id="sec-waschen">
+            <div class="page-hdr">
+              <div>
+                <div class="page-title">Schwarzgeld waschen</div>
+                <div class="page-sub">Service wählen, Betrag eingeben, Frak-Anteil festlegen</div>
+              </div>
+            </div>
+
+            <!-- Services -->
+            <div class="s-label">Service wählen</div>
+            <div class="svc-grid" id="svc-grid"></div>
+
+            <!-- Fail Notice -->
+            <div class="fail-notice" id="fail-notice">
+              <span class="fn-icon">⚠️</span>
+              <div>
+                <div class="fn-ttl">Fehlschlag-Risiko aktiv</div>
+                Bei einem Fehlschlag werden <strong style="color:var(--coral)" id="fn-pct">25–35%</strong> des Betrags abgezogen. Der Rest kommt zurück!
+              </div>
+            </div>
+
+            <!-- Amount + Frak -->
+            <div class="two-col">
+              <!-- Amount -->
+              <div class="input-card">
+                <div class="ic-label">
+                  <span>💰 Betrag</span>
+                  <span class="il-right" id="avail-txt">Verfügbar: 0</span>
+                </div>
+                <div class="ic-inp-row">
+                  <input class="ic-inp" type="number" id="w-inp" placeholder="Menge eingeben..." oninput="calc()" min="1000">
+                  <button class="max-pill" onclick="setMax()">MAX</button>
+                </div>
+                <div class="quick-row">
+                  <button class="qpill" onclick="setA(10000)">10K</button>
+                  <button class="qpill" onclick="setA(100000)">100K</button>
+                  <button class="qpill" onclick="setA(1000000)">1M</button>
+                  <button class="qpill" onclick="setA(100000000)">100M</button>
+                  <button class="qpill" onclick="setA(1000000000)">1B</button>
+                </div>
+                <input type="range" id="w-range" min="0" max="100" value="0" oninput="onRange(this)">
+              </div>
+
+              <!-- Frak % -->
+              <div class="input-card">
+                <div class="ic-label">
+                  <span>🏛️ Frak-Konto Anteil</span>
+                </div>
+                <div class="frak-val-display" id="frak-disp">10%</div>
+                <div class="frak-val-sub">geht direkt ans Fraktionskonto</div>
+                <input type="range" id="frak-range" min="0" max="50" value="10" oninput="onFrakRange(this)">
+                <div style="display:flex;justify-content:space-between;font-size:8px;color:var(--txt2);margin-top:5px;">
+                  <span>0% — alles für dich</span>
+                  <span>50% — Max</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Cooldown -->
+            <div class="cd-card" id="cd-card">
+              <div class="cd-top">
+                <div class="cd-lbl"><div class="cd-spin"></div>Cooldown aktiv</div>
+                <div class="cd-time" id="cd-t">--:--</div>
+              </div>
+              <div class="cd-bar"><div class="cd-fill" id="cd-f" style="width:0%"></div></div>
+            </div>
+
+            <!-- Summary -->
+            <div class="summary">
+              <div class="summary-hdr">
+                <span class="summary-hdr-icon">📋</span>
+                <span class="summary-hdr-txt">Bestellübersicht</span>
+              </div>
+              <div class="sum-row"><span class="sl">Eingabe</span><span class="sv2" id="ov-in">0 Items</span></div>
+              <div class="sum-row"><span class="sl r" id="fee-lbl">Waschgebühr (20%)</span><span class="sv2 r" id="ov-fee">—</span></div>
+              <div class="sum-row"><span class="sl a" id="frk-lbl">Frak-Anteil (10%)</span><span class="sv2 a" id="ov-frk">—</span></div>
+              <div class="sum-row"><span class="sl">Fehlschlag-Abzug</span><span class="sv2 r" id="ov-fail-r">—</span></div>
+              <div class="sum-row"><span class="sl r">Fehlschlag-Chance</span><span class="sv2 r" id="ov-fc">25%</span></div>
+              <div class="sum-row"><span class="sl">Dauer</span><span class="sv2" id="ov-dur">—</span></div>
+              <div class="summary-total">
+                <span class="st-label">Du erhältst (Erfolg)</span>
+                <span class="st-val" id="ov-you">0 Items</span>
+              </div>
+            </div>
+
+            <button class="wash-btn" id="w-btn" onclick="doWash()">💰 Jetzt waschen</button>
+          </div>
+
+          <!-- ═══════ AKTIV ═══════ -->
+          <div class="sec" id="sec-aktiv">
+            <div class="page-hdr">
+              <div>
+                <div class="page-title">Aktive Prozesse</div>
+                <div class="page-sub">Laufende Waschvorgänge & abholbereit</div>
+              </div>
+            </div>
+            <div class="s-label">Laufende Vorgänge</div>
+            <div id="a-list"><div class="empty-state"><div class="es-icon">⏳</div>Keine aktiven Vorgänge.</div></div>
+            <div class="s-label" style="margin-top:18px">Bereit zur Abholung</div>
+            <div id="r-list"><div class="empty-state"><div class="es-icon">💵</div>Kein Geld bereit.</div></div>
+          </div>
+
+          <!-- ═══════ LEVEL ═══════ -->
+          <div class="sec" id="sec-level">
+            <div class="page-hdr">
+              <div>
+                <div class="page-title">Level & Perks</div>
+                <div class="page-sub">Je höher dein Level, desto geringer das Risiko</div>
+              </div>
+            </div>
+            <div class="summary" style="margin-bottom:12px">
+              <div class="summary-hdr"><span>⭐</span><span class="summary-hdr-txt">XP verdienen</span></div>
+              <div class="sum-row"><span class="sl">Pro 1.000 gewaschen</span><span class="sv2" style="color:var(--cyan)">+5 XP</span></div>
+              <div class="sum-row"><span class="sl">Erfolgreicher Wash</span><span class="sv2" style="color:var(--cyan)">+50 XP Bonus</span></div>
+              <div class="sum-row"><span class="sl">Max-Betrag gewaschen</span><span class="sv2" style="color:var(--cyan)">+100 XP Bonus</span></div>
+            </div>
+            <div class="summary">
+              <div class="summary-hdr"><span>📊</span><span class="summary-hdr-txt">Alle Level</span></div>
+              <table class="ltable">
+                <thead><tr><th>LVL</th><th>Titel</th><th>XP</th><th>Fehlschlag</th><th>Abzug</th><th>Perk</th></tr></thead>
+                <tbody id="ltbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ═══════ ADMIN ═══════ -->
+          <div class="sec" id="sec-admin">
+            <div class="page-hdr">
+              <div>
+                <div class="page-title">Admin Panel</div>
+                <div class="page-sub" style="color:var(--coral)">⚠ Nur für berechtigte Admins</div>
+              </div>
+            </div>
+            <div class="adm-kpi">
+              <div class="kpi-card"><div class="kpi-val" id="kpi-total">—</div><div class="kpi-lbl">Gesamt gewaschen</div></div>
+              <div class="kpi-card"><div class="kpi-val" id="kpi-act">0</div><div class="kpi-lbl">Aktive Vorgänge</div></div>
+              <div class="kpi-card"><div class="kpi-val" id="kpi-frak">—</div><div class="kpi-lbl">Frak-Einnahmen</div></div>
+              <div class="kpi-card"><div class="kpi-val" id="kpi-fail">0</div><div class="kpi-lbl">Fehlschläge</div></div>
+            </div>
+            <div class="summary">
+              <div class="summary-hdr"><span>🏛️</span><span class="summary-hdr-txt">Fraktions-Übersicht</span></div>
+              <table class="ftable">
+                <thead><tr><th>Fraktion</th><th>Gesamt gewaschen</th><th>Frak-Einnahmen</th><th>Volumen</th></tr></thead>
+                <tbody id="ftbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+        </div><!-- /content -->
+      </div><!-- /main -->
+    </div><!-- /layout -->
+
+    <!-- DEMO BAR -->
+    <div class="demo-bar">
+      <span class="dl">Demo</span>
+      <span class="dl" style="color:var(--amber)">Schmutzgeld:</span>
+      <input class="di" id="d-dirty" type="number" value="10000000000">
+      <span class="dl" style="color:var(--lime)">Clean:</span>
+      <input class="di sm" id="d-clean" type="number" value="0">
+      <button class="db" onclick="applyDemo()">Setzen</button>
+      <span class="dl">Gebühr%:</span><input class="di sm" id="d-fee" type="number" value="20">
+      <span class="dl">Frak%:</span><input class="di sm" id="d-frk" type="number" value="10">
+      <button class="db adm-an"  onclick="toggleAdmin(true)">Admin AN</button>
+      <button class="db adm-aus" onclick="toggleAdmin(false)">Admin AUS</button>
+    </div>
+
+  </div><!-- /panel -->
+</div><!-- /shell -->
+
+<script>
+// ═══════════════════════════════════════════
+//  DATA
+// ═══════════════════════════════════════════
+const LEVELS = [
+  {l:1,title:'Frischling',      xp:0,    fail:25,abzug:'25–35%',perk:'Zugang freigeschaltet'},
+  {l:2,title:'Laufbursche',     xp:200,  fail:20,abzug:'25–33%',perk:'+5% Kapazität'},
+  {l:3,title:'Straßenläufer',   xp:500,  fail:15,abzug:'25–32%',perk:'+10% Kapazität'},
+  {l:4,title:'Gangster',        xp:1000, fail:12,abzug:'25–30%',perk:'Cooldown -1 Min'},
+  {l:5,title:'Unterwelt-Profi', xp:2000, fail:8, abzug:'25–30%',perk:'Cooldown -2 Min'},
+  {l:6,title:'Kartel-Boss',     xp:3500, fail:5, abzug:'25–28%',perk:'Prioritätslot'},
+  {l:7,title:'Finanzmagnat',    xp:5500, fail:2, abzug:'25–27%',perk:'Gebühr -5%'},
+  {l:8,title:'Der Pate',        xp:8000, fail:0, abzug:'—',     perk:'0% Risiko — LEGEND'},
+];
+const SVCS = {
+  standard:{icon:'🧺',name:'Standard Wash', desc:'Zuverlässig mit Cooldown',  fee:.20,cd:600, minLvl:1,tags:[['pill-coral','-20%'],['pill-amber','★ Beliebt']]},
+  express: {icon:'⚡',name:'Express Wash',  desc:'Sofort — kein Cooldown',     fee:.30,cd:0,   minLvl:1,tags:[['pill-coral','-30%'],['pill-cyan','⚡ Sofort']]},
+  vip:     {icon:'💎',name:'VIP Wash',       desc:'Niedrigste Gebühr, Frak VIP',fee:.12,cd:300, minLvl:4,tags:[['pill-lime','-12%'],['pill-violet','💎 VIP']]},
+};
+const DEMO_FACTIONS = [
+  {name:'Los Santos Mafia',total:540000, frak:54000},
+  {name:'Ballas',          total:310000, frak:24800},
+  {name:'Vagos',           total:820000, frak:98400},
+  {name:'Grove Street',    total:180000, frak:18000},
+  {name:'Merryweather',    total:1200000,frak:144000},
+];
+
+// ═══════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════
+let dirty=10000000000,cleanM=0,plvl=1,pxp=0;
+let curSvc='express',frakPct=10,feeBase=0.20;
+let cdLeft=0,cdTot=0,cdIv=null;
+let actives=[],readys=[];
+let sesWashed=0,sesFails=0,sesFrak=0;
+
+// ═══════════════════════════════════════════
+//  FORMAT
+// ═══════════════════════════════════════════
+function f(n){
+  n=Math.round(n);
+  if(n>=1e9)return(n/1e9).toFixed(2)+'B';
+  if(n>=1e6)return(n/1e6).toFixed(2)+'M';
+  if(n>=1e3)return(n/1e3).toFixed(1)+'K';
+  return n.toLocaleString('de-DE');
+}
+function fd(n){return'$'+f(n);}
+function g(id){return document.getElementById(id);}
+function s(id,val){const e=g(id);if(e)e.textContent=val;}
+
+// ═══════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════
+function init(){
+  buildSvcGrid();
+  buildLevelTable();
+  buildFactionTable(DEMO_FACTIONS);
+  updHeader();
+  updLevelUI();
+  updLiveBanner();
+  updFrakDisplay();
+  calc();
+}
+
+// ═══════════════════════════════════════════
+//  BUILD
+// ═══════════════════════════════════════════
+function buildSvcGrid(){
+  const grid=g('svc-grid'); grid.innerHTML='';
+  for(const[key,svc] of Object.entries(SVCS)){
+    const locked=plvl<svc.minLvl;
+    const active=key===curSvc;
+    const tags=svc.tags.map(([cls,lbl])=>`<span class="pill ${cls}">${lbl}</span>`).join('');
+    const div=document.createElement('div');
+    div.className=`svc-card${active?' active':''}${locked?' locked':''}`;
+    div.id='svc-'+key;
+    div.innerHTML=`
+      <div class="svc-selected-dot"></div>
+      <div class="svc-emoji">${svc.icon}</div>
+      <div class="svc-name">${svc.name}</div>
+      <div class="svc-desc">${svc.desc}${locked?` <span style="color:var(--coral);font-size:9px">(ab Lv${svc.minLvl})</span>`:''}</div>
+      <div class="svc-meta">
+        <div class="svc-fee">${Math.round(svc.fee*100)}%</div>
+        <div class="svc-tags">${tags}</div>
+      </div>`;
+    if(!locked)div.onclick=()=>selSvc(key);
+    grid.appendChild(div);
+  }
+}
+
+function buildLevelTable(){
+  const tb=g('ltbody'); tb.innerHTML='';
+  LEVELS.forEach(L=>{
+    const tr=document.createElement('tr');
+    if(L.l===plvl)tr.className='cur';
+    tr.innerHTML=`
+      <td><span class="badge-lvl ${L.l===plvl?'bl-on':'bl-off'}">${L.l}</span></td>
+      <td style="font-weight:600">${L.title}</td>
+      <td style="font-family:'JetBrains Mono',monospace">${L.xp.toLocaleString()}</td>
+      <td style="color:${L.fail===0?'var(--lime)':'var(--coral)'}">${L.fail}%</td>
+      <td style="color:var(--coral);font-family:'JetBrains Mono',monospace;font-size:10px">${L.abzug}</td>
+      <td style="font-size:10px;color:var(--txt2)">${L.perk}</td>`;
+    tb.appendChild(tr);
+  });
+}
+
+function buildFactionTable(factions){
+  const tb=g('ftbody'); if(!tb||!factions)return;
+  const maxT=Math.max(...factions.map(f2=>f2.total||0));
+  tb.innerHTML='';
+  factions.forEach(fc=>{
+    const pct=maxT>0?Math.round((fc.total||0)/maxT*100):0;
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td style="font-weight:600">${fc.name||fc.job||'—'}</td>
+      <td style="font-family:'JetBrains Mono',monospace">${fd(fc.total||0)}</td>
+      <td style="font-family:'JetBrains Mono',monospace;color:var(--amber)">${fd(fc.frak||0)}</td>
+      <td><div style="font-size:9px;color:var(--txt2);font-family:'JetBrains Mono',monospace">${pct}%</div>
+          <div class="fbar"><div class="fbar-fill" style="width:${pct}%"></div></div></td>`;
+    tb.appendChild(tr);
+  });
+}
+
+// ═══════════════════════════════════════════
+//  HEADER
+// ═══════════════════════════════════════════
+function updHeader(){
+  s('hdr-dirty',f(dirty));
+  s('hdr-clean',f(cleanM));
+  s('avail-txt','Verfügbar: '+f(dirty));
+}
+
+// ═══════════════════════════════════════════
+//  LEVEL
+// ═══════════════════════════════════════════
+function updLevelUI(){
+  const L=LEVELS[plvl-1]||LEVELS[0];
+  const nx=LEVELS[plvl];
+  const base=L.xp,nxXP=nx?nx.xp:L.xp;
+  const xpPct=nx?Math.min(100,(pxp-base)/(nxXP-base)*100):100;
+  const circumference=182;
+  const dashOffset=circumference-(circumference*xpPct/100);
+
+  // sidebar ring
+  s('ring-lvl',plvl);
+  s('lv-title',L.title);
+  s('lv-fail',`⚠ ${L.fail}% Risiko`);
+  s('xp-cur',pxp.toLocaleString());
+  s('xp-nxt',nx?nx.xp.toLocaleString()+' XP':'MAX');
+  const rf=g('ring-fill'); if(rf)rf.style.strokeDashoffset=dashOffset;
+  const xf=g('xpfill2'); if(xf)xf.style.width=xpPct+'%';
+
+  // live banner stats
+  s('ov-fc',L.fail+'%');
+  const fn=g('fn-pct'); if(fn)fn.textContent=L.abzug;
+  const notice=g('fail-notice'); if(notice)notice.style.display=L.fail>0?'flex':'none';
+
+  buildLevelTable();
+  buildSvcGrid();
+}
+
+// ═══════════════════════════════════════════
+//  LIVE BANNER
+// ═══════════════════════════════════════════
+function updLiveBanner(){
+  const svc=SVCS[curSvc];
+  const fp=Math.round(svc.fee*100);
+  const fk=frakPct;
+  const erh=Math.max(0,100-fp-fk);
+  // update header if elements exist
+  const hf=g('hdr-fee'); if(hf)hf.textContent=fp+'%';
+  const hk=g('hdr-frak'); if(hk)hk.textContent=fk+'%';
+  const he=g('hdr-erh'); if(he)he.textContent=erh+'%';
+  s('fee-lbl',`Waschgebühr (${fp}%)`);
+  s('frk-lbl',`Frak-Anteil (${fk}%)`);
+}
+
+function updFrakDisplay(){
+  const r=g('frak-range'); if(r){r.value=frakPct;r.style.setProperty('--p',frakPct+'%');}
+  s('frak-disp',frakPct+'%');
+}
+
+// ═══════════════════════════════════════════
+//  SERVICE
+// ═══════════════════════════════════════════
+function selSvc(key){
+  curSvc=key;feeBase=SVCS[key].fee;
+  document.querySelectorAll('.svc-card').forEach(c=>c.classList.remove('active'));
+  const el=g('svc-'+key); if(el)el.classList.add('active');
+  updLiveBanner(); calc();
+}
+
+// ═══════════════════════════════════════════
+//  AMOUNT
+// ═══════════════════════════════════════════
+function setA(n){
+  const v=Math.min(n,dirty);
+  g('w-inp').value=v;
+  const pct=dirty>0?Math.round(v/dirty*100):0;
+  const r=g('w-range'); r.value=pct; r.style.setProperty('--p',pct+'%');
+  calc();
+}
+function setMax(){setA(dirty);}
+function onRange(el){
+  const pct=parseInt(el.value);
+  el.style.setProperty('--p',pct+'%');
+  g('w-inp').value=Math.floor(dirty*pct/100);
+  calc();
+}
+function onFrakRange(el){
+  frakPct=parseInt(el.value);
+  el.style.setProperty('--p',frakPct+'%');
+  s('frak-disp',frakPct+'%');
+  updLiveBanner(); calc();
+}
+
+// ═══════════════════════════════════════════
+//  CALC
+// ═══════════════════════════════════════════
+function calc(){
+  const amt=parseInt(g('w-inp').value)||0;
+  const svc=SVCS[curSvc];
+  const fee=Math.floor(amt*svc.fee);
+  const after=amt-fee;
+  const frkCut=Math.floor(after*frakPct/100);
+  const you=after-frkCut;
+  const minL=Math.floor(amt*.25),maxL=Math.floor(amt*.35);
+  const steps=Math.floor(amt/10000);
+  const dur=svc.cd>0?Math.max(10,Math.min(300,steps*5))+'s':'Sofort';
+
+  s('ov-in',f(amt)+' Items');
+  s('ov-fee',amt?'-'+f(fee):'—');
+  s('ov-frk',amt?'-'+f(frkCut):'—');
+  s('ov-fail-r',amt?`-${f(minL)} bis -${f(maxL)}`:'—');
+  s('ov-dur',amt?dur:'—');
+  s('ov-you',amt?f(you)+' Items':'0 Items');
+}
+
+// ═══════════════════════════════════════════
+//  WASH
+// ═══════════════════════════════════════════
+function doWash(){
+  const amt=parseInt(g('w-inp').value);
+  if(!amt||amt<1000)return toast('Fehler','Mindestbetrag: 1.000!','err');
+  if(amt>dirty)return toast('Fehler','Nicht genug Schmutzgeld!','err');
+  if(cdLeft>0)return toast('Fehler','Cooldown noch aktiv!','warn');
+
+  const svc=SVCS[curSvc];
+  const L=LEVELS[plvl-1];
+  const roll=Math.random()*100;
+
+  dirty-=amt; updHeader();
+  g('w-inp').value='';
+  const r=g('w-range'); r.value=0; r.style.setProperty('--p','0%');
+  calc();
+
+  // FEHLSCHLAG
+  if(roll<L.fail){
+    const pct=0.25+Math.random()*0.10;
+    const abzug=Math.floor(amt*pct);
+    const zurueck=amt-abzug;
+    dirty+=zurueck; updHeader();
+    sesFails++; s('ss-fails',sesFails);
+
+    g('modal-amt').textContent=`-${fd(abzug)} konfisziert`;
+    g('modal-det').textContent=`${Math.round(pct*100)}% abgezogen · ${fd(zurueck)} zurückerhalten`;
+    g('fail-modal').classList.add('on');
+    g('w-btn').classList.add('shake');
+    setTimeout(()=>g('w-btn').classList.remove('shake'),500);
+    gainXP(10);
+    if(svc.cd>0)startCD(Math.floor(svc.cd/2));
+    return;
+  }
+
+  // ERFOLG
+  const fee=Math.floor(amt*svc.fee);
+  const after=amt-fee;
+  const frkCut=Math.floor(after*frakPct/100);
+  const you=after-frkCut;
+  const durMs=svc.cd>0?Math.max(10000,Math.floor(amt/10000)*1000):3000;
+  const id=Date.now();
+
+  actives.push({id,amount:amt,you,frakCut,dur:durMs,start:Date.now()});
+  updProcBadge();
+  renderActive();
+  toast('Gestartet',`${f(amt)} Items werden gewaschen!`,'info');
+  gainXP(Math.floor(amt/1000)*5+50);
+  if(svc.cd>0)startCD(svc.cd);
+  sesWashed+=amt; s('ss-washed',fd(sesWashed));
+
+  setTimeout(()=>{
+    const idx=actives.findIndex(w=>w.id===id);
+    if(idx!==-1){actives.splice(idx,1);}
+    readys.push({id,you,frakCut,amount:amt});
+    cleanM+=frkCut; sesFrak+=frkCut;
+    updHeader(); renderActive(); renderReady(); updProcBadge();
+    s('ss-frak',fd(sesFrak));
+    toast('Fertig!',`${f(you)} Items bereit!`);
+  },durMs);
+}
+
+function gainXP(v){
+  pxp+=v;
+  const nx=LEVELS[plvl];
+  if(nx&&pxp>=nx.xp){plvl++; toast('Level Up!',`Lv${plvl}: ${LEVELS[plvl-1].title}`,'info');}
+  updLevelUI();
+}
+
+// ═══════════════════════════════════════════
+//  RENDER ACTIVE / READY
+// ═══════════════════════════════════════════
+function renderActive(){
+  const el=g('a-list');
+  if(!actives.length){el.innerHTML='<div class="empty-state"><div class="es-icon">⏳</div>Keine aktiven Vorgänge.</div>';return;}
+  el.innerHTML='';
+  actives.forEach(w=>{
+    const div=document.createElement('div');
+    div.className='proc-item'; div.id='proc-'+w.id;
+    const pct=Math.min(100,(Date.now()-w.start)/w.dur*100).toFixed(0);
+    const rem=Math.max(0,Math.ceil((w.dur-(Date.now()-w.start))/1000));
+    div.innerHTML=`
+      <div class="proc-icon">⏳</div>
+      <div class="proc-info">
+        <div class="proc-name">${f(w.amount)} Items werden gewaschen</div>
+        <div class="proc-sub">Erhältst: ${f(w.you)} · Frak: ${f(w.frakCut)}</div>
+        <div class="proc-bar"><div class="proc-fill" id="pf-${w.id}" style="width:${pct}%"></div></div>
+      </div>
+      <div class="proc-timer" id="pt-${w.id}">${rem}s</div>`;
+    el.appendChild(div);
+    const iv=setInterval(()=>{
+      const e2=Date.now()-w.start;
+      const p2=Math.min(100,e2/w.dur*100).toFixed(0);
+      const r2=Math.max(0,Math.ceil((w.dur-e2)/1000));
+      const pf=g('pf-'+w.id),pt=g('pt-'+w.id);
+      if(pf)pf.style.width=p2+'%';
+      if(pt)pt.textContent=r2+'s';
+      if(r2<=0)clearInterval(iv);
+    },300);
+  });
+}
+
+function renderReady(){
+  const el=g('r-list');
+  if(!readys.length){el.innerHTML='<div class="empty-state"><div class="es-icon">💵</div>Kein Geld bereit.</div>';return;}
+  el.innerHTML='';
+  readys.forEach(w=>{
+    const div=document.createElement('div');
+    div.className='proc-item';
+    div.style.borderColor='rgba(118,255,3,.15)';
+    div.innerHTML=`
+      <div class="proc-icon">✅</div>
+      <div class="proc-info">
+        <div class="proc-name">${f(w.you)} Clean Money bereit</div>
+        <div class="proc-sub">Original: ${f(w.amount)} Schmutzgeld</div>
+      </div>
+      <button class="collect-btn show" onclick="collect(${w.id})">Abholen</button>`;
+    el.appendChild(div);
+  });
+}
+
+function collect(id){
+  const idx=readys.findIndex(w=>w.id===id);
+  if(idx===-1)return;
+  const w=readys[idx]; readys.splice(idx,1);
+  cleanM+=w.you; updHeader(); renderReady(); updProcBadge();
+  toast('Abgeholt',`${f(w.you)} Clean Money im Inventory!`);
+}
+
+function updProcBadge(){
+  const n=actives.length+readys.length;
+  const b=g('nav-badge'); if(b){b.textContent=n;b.className='nav-badge'+(n>0?' show':'');}
+  const k=g('kpi-act'); if(k)k.textContent=actives.length;
+}
+
+// ═══════════════════════════════════════════
+//  COOLDOWN
+// ═══════════════════════════════════════════
+function startCD(secs){
+  cdTot=secs; cdLeft=secs;
+  g('cd-card').classList.add('on');
+  g('w-btn').disabled=true;
+  if(cdIv)clearInterval(cdIv);
+  cdIv=setInterval(()=>{
+    cdLeft--;
+    const pct=(1-cdLeft/cdTot)*100;
+    g('cd-f').style.width=pct+'%';
+    const m=Math.floor(cdLeft/60),sc=cdLeft%60;
+    s('cd-t',`${m}:${String(sc).padStart(2,'0')}`);
+    if(cdLeft<=0){
+      clearInterval(cdIv);
+      g('cd-card').classList.remove('on');
+      g('w-btn').disabled=false;
+      toast('Bereit','Cooldown abgelaufen!','info');
+    }
+  },1000);
+}
+
+// ═══════════════════════════════════════════
+//  NAV
+// ═══════════════════════════════════════════
+function goNav(name,btn){
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.sec').forEach(s2=>s2.classList.remove('on'));
+  if(btn)btn.classList.add('active');
+  const sec=g('sec-'+name); if(sec)sec.classList.add('on');
+}
+
+// ═══════════════════════════════════════════
+//  MODAL
+// ═══════════════════════════════════════════
+function closeModal(){g('fail-modal').classList.remove('on');}
+
+// ═══════════════════════════════════════════
+//  ADMIN
+// ═══════════════════════════════════════════
+function toggleAdmin(on){
+  const t=g('nav-admin'); if(t)t.style.display=on?'flex':'none';
+  if(!on){goNav('waschen',document.querySelector('.nav-btn[data-nav="waschen"]'));}
+  toast(on?'Admin AN':'Admin AUS',on?'Panel aktiviert.':'Panel deaktiviert.',on?'info':'warn');
+}
+
+// ═══════════════════════════════════════════
+//  DEMO
+// ═══════════════════════════════════════════
+function applyDemo(){
+  dirty=parseInt(g('d-dirty').value)||0;
+  cleanM=parseInt(g('d-clean').value)||0;
+  feeBase=(parseInt(g('d-fee').value)||20)/100;
+  // update service fees
+  Object.keys(SVCS).forEach(k=>SVCS[k]._baseFee=feeBase);
+  const fk=parseInt(g('d-frk').value)||10;
+  frakPct=fk; updFrakDisplay();
+  updHeader(); updLiveBanner(); calc();
+  toast('Demo','Werte übernommen!','info');
+}
+
+// ═══════════════════════════════════════════
+//  TOAST
+// ═══════════════════════════════════════════
+function toast(title,msg,type=''){
+  const t=g('toast');
+  s('t-hd',title); s('t-bd',msg);
+  t.className=`toast t-${type} on`;
+  clearTimeout(t._t);
+  t._t=setTimeout(()=>t.classList.remove('on'),4500);
+}
+
+// ═══════════════════════════════════════════
+//  CLOSE UI
+// ═══════════════════════════════════════════
+function closeUI(){
+  try{ fetch(`https://${GetParentResourceName()}/closeUI`,{method:'POST',body:'{}'}); }catch(e){}
+}
+function GetParentResourceName(){
+  try{return window.GetParentResourceName();}catch(e){return'immortalv_geldwaesche';}
+}
+document.addEventListener('keydown',e=>{ if(e.key==='Escape')closeUI(); });
+
+init();
+</script>
+</body>
+</html>

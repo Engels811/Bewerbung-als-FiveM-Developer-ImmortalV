@@ -1,0 +1,2108 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ImmortalV Report v3 - Interaktive Demo</title>
+<style>
+:root{
+  --bg:#0a0f1a;
+  --card:#111827;
+  --card2:#1a2332;
+  --card3:#1f2937;
+  --sep:rgba(0,219,255,.12);
+  --w:#fff;
+  --w95:rgba(255,255,255,.95);
+  --w90:rgba(255,255,255,.9);
+  --w70:rgba(255,255,255,.7);
+  --w60:rgba(255,255,255,.6);
+  --w40:rgba(255,255,255,.4);
+  --w25:rgba(255,255,255,.25);
+  --w12:rgba(255,255,255,.12);
+  --w08:rgba(255,255,255,.08);
+  --cyan:#00dbff;
+  --cyan-glow:rgba(0,219,255,.5);
+  --grn:#10b981;
+  --red:#ef4444;
+  --org:#f59e0b;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:linear-gradient(135deg,#0a0f1a 0%,#050812 100%);
+  color:var(--w);
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  line-height:1.6;
+  overflow-x:hidden;
+  position:relative;
+  min-height:100vh;
+}
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(circle at 15% 20%,rgba(0,219,255,.15) 0%,transparent 40%),
+    radial-gradient(circle at 85% 80%,rgba(0,168,204,.12) 0%,transparent 40%);
+  pointer-events:none;
+  animation:glow 15s ease infinite;
+  z-index:0;
+}
+@keyframes glow{
+  0%,100%{opacity:.6}
+  50%{opacity:.9}
+}
+
+/* Demo Container */
+.demo-container{
+  position:relative;
+  z-index:1;
+  padding:40px 20px;
+  max-width:1800px;
+  margin:0 auto;
+}
+
+/* Hero */
+.hero{
+  text-align:center;
+  padding:60px 20px 40px;
+}
+.logo{
+  font-size:64px;
+  font-weight:900;
+  background:linear-gradient(135deg,var(--cyan),#fff);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  margin-bottom:15px;
+  text-shadow:0 0 60px var(--cyan-glow);
+  filter:drop-shadow(0 0 20px var(--cyan-glow));
+  letter-spacing:-2px;
+}
+.tagline{
+  font-size:24px;
+  color:var(--w70);
+  margin-bottom:30px;
+}
+.demo-info{
+  display:inline-block;
+  padding:12px 24px;
+  background:rgba(0,219,255,.15);
+  border:1px solid rgba(0,219,255,.3);
+  border-radius:30px;
+  font-size:14px;
+  color:var(--cyan);
+  font-weight:700;
+  box-shadow:0 0 30px rgba(0,219,255,.2);
+}
+
+/* Switch Buttons */
+.view-switch{
+  display:flex;
+  gap:16px;
+  justify-content:center;
+  margin:40px 0 30px;
+}
+.view-btn{
+  padding:14px 32px;
+  border-radius:30px;
+  border:2px solid var(--sep);
+  background:rgba(17,24,39,.8);
+  color:var(--w60);
+  font-size:15px;
+  font-weight:700;
+  cursor:pointer;
+  transition:all .3s;
+  position:relative;
+  overflow:hidden;
+}
+.view-btn::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg,var(--cyan),transparent);
+  opacity:0;
+  transition:opacity .3s;
+}
+.view-btn:hover{
+  border-color:rgba(0,219,255,.5);
+  color:var(--cyan);
+  transform:translateY(-2px);
+  box-shadow:0 8px 30px rgba(0,219,255,.3);
+}
+.view-btn.active{
+  background:rgba(0,219,255,.15);
+  border-color:var(--cyan);
+  color:var(--cyan);
+  box-shadow:0 0 30px rgba(0,219,255,.4);
+}
+.view-btn.active::before{opacity:.1}
+
+/* Views */
+.view{display:none}
+.view.active{display:block;animation:fadeIn .4s ease}
+@keyframes fadeIn{
+  from{opacity:0;transform:translateY(10px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* Toast */
+.toast{
+  position:fixed;
+  bottom:30px;
+  right:30px;
+  padding:16px 24px;
+  border-radius:16px;
+  background:rgba(17,24,39,.95);
+  border:1px solid var(--sep);
+  color:var(--w);
+  font-weight:600;
+  font-size:14px;
+  box-shadow:0 8px 32px rgba(0,0,0,.5),0 0 30px rgba(0,219,255,.2);
+  z-index:9999;
+  backdrop-filter:blur(20px);
+  transform:translateX(400px);
+  transition:transform .3s ease;
+}
+.toast.show{transform:translateX(0)}
+.toast.success{
+  border-color:var(--grn);
+  box-shadow:0 8px 32px rgba(0,0,0,.5),0 0 30px rgba(16,185,129,.3);
+}
+.toast.error{
+  border-color:var(--red);
+  box-shadow:0 8px 32px rgba(0,0,0,.5),0 0 30px rgba(239,68,68,.3);
+}
+.toast::before{
+  content:'';
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  height:2px;
+  background:linear-gradient(90deg,var(--cyan),transparent);
+}
+.toast.success::before{background:linear-gradient(90deg,var(--grn),transparent)}
+.toast.error::before{background:linear-gradient(90deg,var(--red),transparent)}
+
+/* Modal Overlay */
+.modal-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.8);
+  backdrop-filter:blur(10px);
+  z-index:9990;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .3s;
+  padding:20px;
+}
+.modal-overlay.show{
+  opacity:1;
+  pointer-events:all;
+}
+
+/* Report Detail Modal */
+.report-detail{
+  background:rgba(17,24,39,.98);
+  border-radius:24px;
+  border:1px solid var(--sep);
+  box-shadow:0 20px 80px rgba(0,0,0,.8),0 0 60px rgba(0,219,255,.2);
+  max-width:900px;
+  width:100%;
+  max-height:90vh;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  backdrop-filter:blur(40px);
+  animation:modalIn .4s ease;
+}
+@keyframes modalIn{
+  from{opacity:0;transform:scale(.95) translateY(20px)}
+  to{opacity:1;transform:scale(1) translateY(0)}
+}
+
+.detail-header{
+  padding:24px 32px;
+  border-bottom:1px solid var(--sep);
+  background:linear-gradient(180deg,rgba(0,219,255,.08),transparent);
+}
+.detail-back{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  color:var(--cyan);
+  font-size:14px;
+  font-weight:700;
+  cursor:pointer;
+  margin-bottom:16px;
+  transition:all .2s;
+}
+.detail-back:hover{
+  opacity:.7;
+  transform:translateX(-3px);
+}
+.detail-meta{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:12px;
+  flex-wrap:wrap;
+}
+.detail-cat{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:6px 16px;
+  background:rgba(0,219,255,.1);
+  border-radius:20px;
+  font-size:13px;
+  font-weight:700;
+  color:var(--cyan);
+  border:1px solid rgba(0,219,255,.2);
+}
+.detail-cat .icon{font-size:18px}
+.detail-status{
+  padding:6px 16px;
+  border-radius:20px;
+  font-size:11px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.8px;
+}
+.detail-status.open{
+  background:rgba(0,219,255,.15);
+  color:var(--cyan);
+  border:1px solid rgba(0,219,255,.3);
+  box-shadow:0 0 15px rgba(0,219,255,.2);
+}
+.detail-priority{
+  padding:6px 16px;
+  border-radius:20px;
+  font-size:11px;
+  font-weight:800;
+  border:1px solid var(--sep);
+}
+.detail-priority.low{
+  background:rgba(16,185,129,.1);
+  color:var(--grn);
+  border-color:rgba(16,185,129,.3);
+}
+.detail-priority.medium{
+  background:rgba(245,158,11,.1);
+  color:var(--org);
+  border-color:rgba(245,158,11,.3);
+}
+.detail-priority.high{
+  background:rgba(239,68,68,.1);
+  color:var(--red);
+  border-color:rgba(239,68,68,.3);
+}
+.detail-title{
+  font-size:26px;
+  font-weight:900;
+  color:var(--w95);
+  margin-bottom:8px;
+  letter-spacing:-.5px;
+}
+.detail-info{
+  display:flex;
+  gap:16px;
+  font-size:13px;
+  color:var(--w40);
+  flex-wrap:wrap;
+}
+.detail-info span{
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+.detail-tabs{
+  display:flex;
+  background:rgba(0,0,0,.3);
+  padding:0 32px;
+  border-bottom:1px solid var(--sep);
+}
+.detail-tab{
+  padding:14px 24px;
+  font-size:14px;
+  font-weight:700;
+  color:var(--w40);
+  cursor:pointer;
+  border-bottom:2px solid transparent;
+  transition:all .2s;
+  position:relative;
+}
+.detail-tab:hover{color:var(--w70)}
+.detail-tab.active{
+  color:var(--cyan);
+  border-color:var(--cyan);
+}
+.detail-tab.active::before{
+  content:'';
+  position:absolute;
+  bottom:0;
+  left:0;
+  right:0;
+  height:2px;
+  background:var(--cyan);
+  box-shadow:0 0 10px var(--cyan);
+}
+
+.detail-content{
+  flex:1;
+  overflow-y:auto;
+  padding:32px;
+}
+.detail-content::-webkit-scrollbar{width:6px}
+.detail-content::-webkit-scrollbar-track{background:transparent}
+.detail-content::-webkit-scrollbar-thumb{
+  background:var(--cyan);
+  border-radius:10px;
+  opacity:.3;
+}
+
+.detail-pane{display:none}
+.detail-pane.active{display:block;animation:fadeIn .3s ease}
+
+.info-card{
+  background:var(--card2);
+  border-radius:16px;
+  padding:20px;
+  margin-bottom:16px;
+  border:1px solid var(--sep);
+}
+.info-label{
+  font-size:11px;
+  color:var(--w40);
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:1.5px;
+  margin-bottom:10px;
+}
+.info-value{
+  font-size:15px;
+  color:var(--w70);
+  line-height:1.7;
+}
+.info-value a{
+  color:var(--cyan);
+  text-decoration:none;
+  font-weight:700;
+  text-shadow:0 0 10px var(--cyan-glow);
+  word-break:break-all;
+  transition:opacity .2s;
+}
+.info-value a:hover{opacity:.8}
+
+.info-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:16px;
+}
+
+/* Chat */
+.chat-container{
+  display:flex;
+  flex-direction:column;
+  height:400px;
+}
+.chat-messages{
+  flex:1;
+  overflow-y:auto;
+  padding:20px;
+  background:var(--card2);
+  border-radius:16px 16px 0 0;
+  border:1px solid var(--sep);
+}
+.chat-messages::-webkit-scrollbar{width:4px}
+.chat-messages::-webkit-scrollbar-track{background:transparent}
+.chat-messages::-webkit-scrollbar-thumb{
+  background:var(--cyan);
+  border-radius:10px;
+  opacity:.3;
+}
+.chat-msg{
+  margin-bottom:16px;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+}
+.chat-msg.me{align-items:flex-end}
+.chat-sender{
+  font-size:12px;
+  font-weight:700;
+  margin-bottom:4px;
+  padding:0 4px;
+  color:var(--w40);
+}
+.chat-msg.me .chat-sender{color:var(--cyan)}
+.chat-msg.team .chat-sender{color:var(--org)}
+.chat-msg.player .chat-sender{color:var(--w70)}
+.chat-bubble{
+  max-width:80%;
+  padding:12px 18px;
+  border-radius:16px;
+  font-size:14px;
+  line-height:1.6;
+  word-wrap:break-word;
+}
+.chat-msg.me .chat-bubble{
+  background:var(--cyan);
+  color:#000;
+  border-bottom-right-radius:4px;
+  box-shadow:0 0 15px rgba(0,219,255,.3);
+}
+.chat-msg.team .chat-bubble{
+  background:var(--card3);
+  color:var(--w90);
+  border-bottom-left-radius:4px;
+}
+.chat-msg.player .chat-bubble{
+  background:rgba(245,158,11,.15);
+  color:var(--w90);
+  border:1px solid rgba(245,158,11,.3);
+  border-bottom-left-radius:4px;
+}
+.chat-time{
+  font-size:11px;
+  color:var(--w25);
+  margin-top:4px;
+  padding:0 4px;
+}
+
+.chat-input-area{
+  display:flex;
+  gap:12px;
+  padding:16px 20px;
+  background:var(--card2);
+  border-radius:0 0 16px 16px;
+  border:1px solid var(--sep);
+  border-top:none;
+}
+.chat-input{
+  flex:1;
+  padding:12px 18px;
+  background:var(--card3);
+  border:1px solid var(--sep);
+  border-radius:12px;
+  color:var(--w);
+  font-size:14px;
+  font-family:inherit;
+}
+.chat-input:focus{
+  outline:none;
+  border-color:var(--cyan);
+  box-shadow:0 0 0 3px rgba(0,219,255,.1);
+}
+.chat-input::placeholder{color:var(--w25)}
+.chat-send{
+  padding:12px 24px;
+  background:linear-gradient(135deg,var(--cyan),#00a8cc);
+  color:#000;
+  border:none;
+  border-radius:12px;
+  font-size:14px;
+  font-weight:800;
+  cursor:pointer;
+  transition:all .2s;
+  box-shadow:0 0 15px rgba(0,219,255,.3);
+}
+.chat-send:hover{
+  transform:translateY(-2px);
+  box-shadow:0 4px 20px rgba(0,219,255,.5);
+}
+
+/* Files Display */
+.files-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+  gap:12px;
+}
+.file-preview{
+  aspect-ratio:16/9;
+  background:var(--card3);
+  border-radius:12px;
+  border:1px solid var(--sep);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:32px;
+  cursor:pointer;
+  transition:all .2s;
+}
+.file-preview:hover{
+  border-color:var(--cyan);
+  transform:scale(1.05);
+  box-shadow:0 8px 24px rgba(0,0,0,.5);
+}
+
+/* Actions (Team only) */
+.action-bar{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-bottom:20px;
+}
+.action-btn{
+  padding:12px 24px;
+  border-radius:14px;
+  border:1px solid var(--sep);
+  background:var(--card2);
+  color:var(--w70);
+  font-size:14px;
+  font-weight:700;
+  cursor:pointer;
+  transition:all .2s;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.action-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 4px 16px rgba(0,0,0,.4);
+}
+.action-btn.status{
+  background:rgba(0,219,255,.1);
+  color:var(--cyan);
+  border-color:rgba(0,219,255,.3);
+}
+.action-btn.status:hover{
+  background:rgba(0,219,255,.15);
+  box-shadow:0 4px 16px rgba(0,219,255,.3);
+}
+.action-btn.danger{
+  background:rgba(239,68,68,.1);
+  color:var(--red);
+  border-color:rgba(239,68,68,.3);
+}
+.action-btn.danger:hover{
+  background:rgba(239,68,68,.15);
+  box-shadow:0 4px 16px rgba(239,68,68,.3);
+}
+
+/* Player UI Styles (kompakt für Demo) */
+.player-ui{
+  max-width:700px;
+  margin:0 auto;
+  background:rgba(17,24,39,.95);
+  border-radius:28px;
+  overflow:hidden;
+  border:1px solid var(--sep);
+  box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 40px rgba(0,219,255,.15);
+  backdrop-filter:blur(40px);
+}
+.p-header{
+  padding:24px 32px;
+  border-bottom:1px solid var(--sep);
+  background:linear-gradient(180deg,rgba(0,219,255,.08),transparent);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.p-title{
+  font-size:22px;
+  font-weight:900;
+  background:linear-gradient(135deg,var(--cyan),var(--w));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.p-close{
+  padding:8px 18px;
+  border-radius:24px;
+  background:var(--card2);
+  border:1px solid var(--sep);
+  color:var(--w60);
+  font-size:13px;
+  font-weight:700;
+  cursor:pointer;
+  transition:all .2s;
+}
+.p-close:hover{
+  background:var(--card3);
+  color:var(--cyan);
+  border-color:rgba(0,219,255,.3);
+}
+.p-tabs{
+  display:flex;
+  background:var(--card2);
+  margin:16px 32px;
+  border-radius:16px;
+  padding:4px;
+}
+.p-tab{
+  flex:1;
+  padding:12px;
+  text-align:center;
+  border-radius:12px;
+  font-size:14px;
+  font-weight:700;
+  color:var(--w60);
+  cursor:pointer;
+  transition:all .2s;
+}
+.p-tab:hover{color:var(--w90)}
+.p-tab.active{
+  background:var(--card3);
+  color:var(--cyan);
+  box-shadow:0 2px 12px rgba(0,0,0,.3);
+}
+.p-content{
+  padding:24px 32px 32px;
+  max-height:600px;
+  overflow-y:auto;
+}
+.p-content::-webkit-scrollbar{width:6px}
+.p-content::-webkit-scrollbar-track{background:transparent}
+.p-content::-webkit-scrollbar-thumb{
+  background:var(--cyan);
+  border-radius:10px;
+  opacity:.3;
+}
+
+.form-group{margin-bottom:20px}
+.form-label{
+  font-size:13px;
+  color:var(--w60);
+  font-weight:700;
+  margin-bottom:10px;
+  display:block;
+  text-transform:uppercase;
+  letter-spacing:1px;
+}
+.form-input,.form-textarea{
+  width:100%;
+  padding:14px 18px;
+  background:var(--card2);
+  border:1px solid var(--sep);
+  border-radius:14px;
+  color:var(--w);
+  font-size:15px;
+  font-weight:500;
+  transition:all .2s;
+  font-family:inherit;
+}
+.form-input:focus,.form-textarea:focus{
+  outline:none;
+  border-color:var(--cyan);
+  box-shadow:0 0 0 3px rgba(0,219,255,.1);
+}
+.form-input::placeholder,.form-textarea::placeholder{color:var(--w25)}
+.form-textarea{
+  resize:none;
+  height:100px;
+  line-height:1.6;
+}
+
+.cat-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+.cat-btn{
+  padding:16px 12px;
+  border-radius:14px;
+  border:2px solid var(--sep);
+  background:var(--card2);
+  color:var(--w60);
+  font-size:13px;
+  font-weight:700;
+  cursor:pointer;
+  text-align:center;
+  transition:all .2s;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+}
+.cat-btn:hover{
+  border-color:var(--w12);
+  color:var(--w90);
+}
+.cat-btn.active{
+  border-color:var(--cyan);
+  background:rgba(0,219,255,.1);
+  color:var(--cyan);
+  box-shadow:0 0 20px rgba(0,219,255,.2);
+}
+.cat-btn .icon{font-size:24px}
+
+.pri-row{display:flex;gap:10px}
+.pri-btn{
+  flex:1;
+  padding:12px;
+  border-radius:14px;
+  border:2px solid var(--sep);
+  background:var(--card2);
+  color:var(--w60);
+  font-size:14px;
+  font-weight:700;
+  cursor:pointer;
+  text-align:center;
+  transition:all .2s;
+}
+.pri-btn:hover{border-color:var(--w12)}
+.pri-btn.active{
+  border-color:currentColor;
+  background:rgba(16,185,129,.1);
+}
+.pri-btn[data-pri="low"].active{
+  border-color:var(--grn);
+  background:rgba(16,185,129,.1);
+  color:var(--grn);
+}
+.pri-btn[data-pri="medium"].active{
+  border-color:var(--org);
+  background:rgba(245,158,11,.1);
+  color:var(--org);
+}
+.pri-btn[data-pri="high"].active{
+  border-color:var(--red);
+  background:rgba(239,68,68,.1);
+  color:var(--red);
+}
+
+.file-upload-area{
+  border:2px dashed var(--sep);
+  border-radius:14px;
+  padding:20px;
+  text-align:center;
+  cursor:pointer;
+  transition:all .2s;
+  background:var(--card2);
+}
+.file-upload-area:hover{
+  border-color:var(--cyan);
+  background:rgba(0,219,255,.05);
+}
+.file-upload-area.has-files{
+  border-style:solid;
+  border-color:var(--cyan);
+}
+.upload-icon{
+  font-size:32px;
+  margin-bottom:10px;
+  opacity:.5;
+}
+.upload-text{
+  font-size:13px;
+  color:var(--w40);
+  font-weight:600;
+}
+.file-list{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+.file-item{
+  padding:8px 14px;
+  background:var(--card3);
+  border-radius:10px;
+  font-size:12px;
+  color:var(--w70);
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.file-item .remove{
+  cursor:pointer;
+  color:var(--red);
+  font-weight:900;
+}
+
+.submit-btn{
+  width:100%;
+  padding:16px;
+  border:none;
+  border-radius:16px;
+  background:linear-gradient(135deg,var(--cyan),#00a8cc);
+  color:#000;
+  font-size:16px;
+  font-weight:900;
+  cursor:pointer;
+  transition:all .3s;
+  margin-top:10px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  box-shadow:0 4px 20px rgba(0,219,255,.4);
+}
+.submit-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 30px rgba(0,219,255,.6);
+}
+.submit-btn:active{
+  transform:translateY(0);
+}
+
+.report-list{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.report-item{
+  background:var(--card2);
+  border:1px solid var(--sep);
+  border-radius:16px;
+  padding:18px;
+  cursor:pointer;
+  transition:all .3s;
+  position:relative;
+  overflow:hidden;
+}
+.report-item::before{
+  content:'';
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  height:2px;
+  background:linear-gradient(90deg,var(--cyan),transparent);
+}
+.report-item:hover{
+  border-color:rgba(0,219,255,.3);
+  transform:translateY(-2px);
+  box-shadow:0 8px 24px rgba(0,0,0,.4);
+}
+.report-item-header{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:8px;
+}
+.report-item-icon{font-size:20px}
+.report-item-title{
+  font-size:15px;
+  font-weight:800;
+  color:var(--w90);
+  flex:1;
+}
+.report-item-badge{
+  padding:4px 12px;
+  border-radius:20px;
+  font-size:10px;
+  font-weight:800;
+  text-transform:uppercase;
+}
+.report-item-badge.open{
+  background:rgba(0,219,255,.15);
+  color:var(--cyan);
+  box-shadow:0 0 10px rgba(0,219,255,.2);
+}
+.report-item-desc{
+  font-size:13px;
+  color:var(--w60);
+  margin-bottom:8px;
+}
+.report-item-meta{
+  font-size:11px;
+  color:var(--w40);
+  display:flex;
+  gap:12px;
+}
+
+.empty{
+  text-align:center;
+  padding:60px 20px;
+  color:var(--w40);
+}
+.empty-icon{
+  font-size:64px;
+  margin-bottom:16px;
+  opacity:.3;
+}
+
+/* Team Dashboard Styles */
+.team-ui{
+  max-width:1600px;
+  margin:0 auto;
+  height:850px;
+  background:rgba(17,24,39,.95);
+  border-radius:24px;
+  overflow:hidden;
+  border:1px solid var(--sep);
+  box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 60px rgba(0,219,255,.15);
+  backdrop-filter:blur(40px);
+  display:flex;
+}
+.t-sidebar{
+  width:280px;
+  background:linear-gradient(180deg,rgba(17,24,39,.95),rgba(17,24,39,.98));
+  border-right:1px solid rgba(0,219,255,.18);
+  display:flex;
+  flex-direction:column;
+  position:relative;
+}
+.t-sidebar::before{
+  content:'';
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:0;
+  width:1px;
+  background:linear-gradient(180deg,var(--cyan),transparent);
+  opacity:.3;
+}
+.t-brand{
+  padding:32px 24px 24px;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:2.5px;
+  color:var(--cyan);
+  text-transform:uppercase;
+  border-bottom:1px solid var(--sep);
+  background:linear-gradient(180deg,rgba(0,219,255,.08),transparent);
+  text-shadow:0 0 20px rgba(0,219,255,.5);
+  position:relative;
+}
+.t-brand::after{
+  content:'IMMORTAL V';
+  position:absolute;
+  top:8px;
+  left:24px;
+  font-size:9px;
+  color:var(--w40);
+  letter-spacing:3px;
+}
+.t-stats{
+  padding:20px 24px;
+  border-bottom:1px solid var(--sep);
+}
+.t-stat{
+  display:flex;
+  justify-content:space-between;
+  padding:10px 0;
+  font-size:13px;
+  color:var(--w60);
+  font-weight:600;
+}
+.t-stat .value{
+  font-weight:900;
+  font-size:16px;
+  text-shadow:0 0 10px currentColor;
+}
+.t-stat .value.cyan{color:var(--cyan)}
+.t-stat .value.org{color:var(--org)}
+.t-stat .value.grn{color:var(--grn)}
+.t-nav{
+  flex:1;
+  overflow-y:auto;
+  padding:12px 16px;
+}
+.t-nav::-webkit-scrollbar{width:4px}
+.t-nav::-webkit-scrollbar-track{background:transparent}
+.t-nav::-webkit-scrollbar-thumb{
+  background:var(--cyan);
+  border-radius:10px;
+  opacity:.3;
+}
+.t-section{
+  font-size:10px;
+  color:var(--w25);
+  font-weight:800;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  padding:24px 0 8px;
+}
+.t-item{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px 16px;
+  border-radius:14px;
+  font-size:14px;
+  color:var(--w60);
+  font-weight:600;
+  margin-bottom:4px;
+  cursor:pointer;
+  transition:all .2s;
+  position:relative;
+}
+.t-item::before{
+  content:'';
+  position:absolute;
+  left:0;
+  top:50%;
+  transform:translateY(-50%);
+  width:3px;
+  height:0;
+  background:var(--cyan);
+  border-radius:0 10px 10px 0;
+  transition:height .2s;
+  box-shadow:0 0 10px var(--cyan);
+}
+.t-item:hover{
+  background:var(--w08);
+  color:var(--w90);
+}
+.t-item.active{
+  background:rgba(0,219,255,.12);
+  color:var(--cyan);
+  box-shadow:inset 0 0 0 1px rgba(0,219,255,.2);
+}
+.t-item.active::before{height:60%}
+.t-item .icon{
+  font-size:18px;
+  width:28px;
+  text-align:center;
+}
+.t-item .count{
+  margin-left:auto;
+  background:var(--w08);
+  padding:4px 10px;
+  border-radius:12px;
+  font-size:11px;
+  font-weight:800;
+}
+.t-item.active .count{
+  background:rgba(0,219,255,.2);
+  color:var(--cyan);
+  box-shadow:0 0 8px rgba(0,219,255,.3);
+}
+.team-badge{
+  margin:20px 16px;
+  padding:16px;
+  background:var(--card2);
+  border-radius:14px;
+  border:1px solid rgba(0,219,255,.2);
+  box-shadow:0 0 20px rgba(0,219,255,.1);
+}
+.team-badge .label{
+  font-size:10px;
+  color:var(--w40);
+  text-transform:uppercase;
+  letter-spacing:1.5px;
+  margin-bottom:6px;
+}
+.team-badge .role{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:16px;
+  font-weight:800;
+  color:var(--cyan);
+  text-shadow:0 0 15px var(--cyan-glow);
+}
+.team-badge .role-icon{
+  font-size:22px;
+  filter:drop-shadow(0 0 8px var(--cyan));
+}
+.t-main{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  background:var(--bg);
+}
+.t-header{
+  padding:24px 32px;
+  border-bottom:1px solid var(--sep);
+  background:linear-gradient(180deg,rgba(17,24,39,.8),transparent);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  position:relative;
+}
+.t-header::after{
+  content:'';
+  position:absolute;
+  bottom:0;
+  left:32px;
+  right:32px;
+  height:1px;
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);
+  opacity:.3;
+}
+.t-header-title{
+  font-size:22px;
+  font-weight:900;
+  background:linear-gradient(135deg,var(--cyan),var(--w));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  text-shadow:0 0 30px rgba(0,219,255,.5);
+  filter:drop-shadow(0 0 10px rgba(0,219,255,.3));
+}
+.t-header-actions{
+  display:flex;
+  gap:10px;
+}
+.t-btn{
+  padding:8px 18px;
+  border-radius:24px;
+  background:var(--card2);
+  border:1px solid var(--sep);
+  color:var(--w60);
+  font-size:13px;
+  font-weight:700;
+  cursor:pointer;
+  transition:all .2s;
+}
+.t-btn:hover{
+  background:var(--card3);
+  color:var(--cyan);
+  border-color:rgba(0,219,255,.3);
+  box-shadow:0 0 15px rgba(0,219,255,.2);
+}
+.t-content{
+  flex:1;
+  overflow-y:auto;
+  padding:24px 32px;
+}
+.t-content::-webkit-scrollbar{width:6px}
+.t-content::-webkit-scrollbar-track{background:transparent}
+.t-content::-webkit-scrollbar-thumb{
+  background:var(--cyan);
+  border-radius:10px;
+  opacity:.3;
+}
+.t-report-card{
+  background:var(--card);
+  border:1px solid var(--sep);
+  border-radius:18px;
+  padding:20px;
+  margin-bottom:12px;
+  cursor:pointer;
+  transition:all .3s;
+  position:relative;
+  overflow:hidden;
+}
+.t-report-card::before{
+  content:'';
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  height:3px;
+  background:linear-gradient(90deg,var(--cyan),#00a8cc);
+  box-shadow:0 0 10px var(--cyan);
+}
+.t-report-card:hover{
+  border-color:rgba(0,219,255,.3);
+  transform:translateY(-3px);
+  box-shadow:0 12px 40px rgba(0,0,0,.5),0 0 30px rgba(0,219,255,.2);
+}
+.t-report-header{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:12px;
+}
+.t-report-icon{
+  font-size:24px;
+  filter:drop-shadow(0 0 6px var(--cyan-glow));
+}
+.t-report-id{
+  font-size:11px;
+  color:var(--cyan);
+  font-weight:700;
+  padding:3px 10px;
+  background:rgba(0,219,255,.1);
+  border-radius:8px;
+  text-shadow:0 0 8px var(--cyan);
+}
+.t-report-title{
+  font-size:16px;
+  font-weight:800;
+  color:var(--w90);
+  flex:1;
+}
+.t-report-badge{
+  padding:5px 14px;
+  border-radius:24px;
+  font-size:10px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.8px;
+}
+.t-report-badge.open{
+  background:rgba(0,219,255,.12);
+  color:var(--cyan);
+  border:1px solid rgba(0,219,255,.3);
+  box-shadow:0 0 12px rgba(0,219,255,.3);
+}
+.t-report-desc{
+  font-size:14px;
+  color:var(--w60);
+  line-height:1.6;
+  margin-bottom:12px;
+}
+.t-report-meta{
+  display:flex;
+  gap:16px;
+  font-size:12px;
+  color:var(--w40);
+}
+
+@media(max-width:1400px){
+  .team-ui{flex-direction:column;height:auto}
+  .t-sidebar{width:100%;border-right:none;border-bottom:1px solid var(--sep)}
+}
+</style>
+</head>
+<body>
+
+<div class="demo-container">
+  <div class="hero">
+    <div class="logo">IMMORTAL V</div>
+    <div class="tagline">Report System v3.0</div>
+    <div class="demo-info">✨ Vollständig Interaktive Demo - Alles testen!</div>
+  </div>
+
+  <div class="view-switch">
+    <button class="view-btn active" onclick="switchView('player')">
+      👤 Spieler-Menü
+    </button>
+    <button class="view-btn" onclick="switchView('team')">
+      👥 Team-Dashboard
+    </button>
+  </div>
+
+  <!-- PLAYER VIEW -->
+  <div id="player-view" class="view active">
+    <div class="player-ui">
+      <div class="p-header">
+        <div class="p-title">📋 Report System</div>
+        <div class="p-close" onclick="showToast('UI würde geschlossen werden', 'success')">✕ Schließen</div>
+      </div>
+      
+      <div class="p-tabs">
+        <div class="p-tab active" onclick="switchPlayerTab('new')">Neuer Report</div>
+        <div class="p-tab" onclick="switchPlayerTab('my')">Meine Reports (<span id="my-count">2</span>)</div>
+      </div>
+      
+      <div class="p-content">
+        <!-- New Report Tab -->
+        <div id="tab-new" class="tab-content">
+          <div class="form-group">
+            <label class="form-label">Kategorie</label>
+            <div class="cat-grid">
+              <div class="cat-btn active" data-cat="player" onclick="selectCategory(this)">
+                <div class="icon">👤</div>
+                <div>Spieler</div>
+              </div>
+              <div class="cat-btn" data-cat="bug" onclick="selectCategory(this)">
+                <div class="icon">🐛</div>
+                <div>Bug</div>
+              </div>
+              <div class="cat-btn" data-cat="song" onclick="selectCategory(this)">
+                <div class="icon">🎵</div>
+                <div>Song</div>
+              </div>
+              <div class="cat-btn" data-cat="station" onclick="selectCategory(this)">
+                <div class="icon">📻</div>
+                <div>Sender</div>
+              </div>
+              <div class="cat-btn" data-cat="question" onclick="selectCategory(this)">
+                <div class="icon">❓</div>
+                <div>Frage</div>
+              </div>
+              <div class="cat-btn" data-cat="other" onclick="selectCategory(this)">
+                <div class="icon">📝</div>
+                <div>Sonstiges</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-group" id="target-field" style="display:none">
+            <label class="form-label">Gemeldeter Spieler (optional)</label>
+            <input class="form-input" id="target-input" placeholder="Spieler ID oder Name">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Titel</label>
+            <input class="form-input" id="title-input" placeholder="Kurze Beschreibung des Problems">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Beschreibung</label>
+            <textarea class="form-textarea" id="desc-input" placeholder="Details zum Problem..."></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Link / Video-URL (optional)</label>
+            <input class="form-input" id="link-input" placeholder="https://clips.twitch.tv/... oder https://medal.tv/...">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Screenshots / Videos (optional)</label>
+            <div class="file-upload-area" onclick="document.getElementById('file-input').click()">
+              <div class="upload-icon">📁</div>
+              <div class="upload-text">Klicken zum Hochladen (Bilder & Videos)</div>
+              <input type="file" id="file-input" accept="image/*,video/*" multiple style="display:none" onchange="handleFileUpload(event)">
+              <div class="file-list" id="file-list"></div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Priorität</label>
+            <div class="pri-row">
+              <div class="pri-btn" data-pri="low" onclick="selectPriority(this)">🟢 Niedrig</div>
+              <div class="pri-btn active" data-pri="medium" onclick="selectPriority(this)">🟡 Mittel</div>
+              <div class="pri-btn" data-pri="high" onclick="selectPriority(this)">🔴 Hoch</div>
+            </div>
+          </div>
+          
+          <button class="submit-btn" onclick="submitReport()">Report absenden</button>
+        </div>
+        
+        <!-- My Reports Tab -->
+        <div id="tab-my" class="tab-content" style="display:none">
+          <div class="report-list" id="my-reports">
+            <!-- Reports werden hier dynamisch eingefügt -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEAM VIEW -->
+  <div id="team-view" class="view">
+    <div class="team-ui">
+      <div class="t-sidebar">
+        <div class="t-brand">Report System</div>
+        
+        <div class="t-stats">
+          <div class="t-stat">
+            <span>Offen</span>
+            <span class="value cyan" id="stat-open">0</span>
+          </div>
+          <div class="t-stat">
+            <span>In Bearbeitung</span>
+            <span class="value org" id="stat-progress">0</span>
+          </div>
+          <div class="t-stat">
+            <span>Geschlossen</span>
+            <span class="value grn" id="stat-closed">0</span>
+          </div>
+          <div class="t-stat">
+            <span>Gesamt</span>
+            <span class="value" id="stat-total">0</span>
+          </div>
+        </div>
+        
+        <div class="t-nav">
+          <div class="t-section">FILTER</div>
+          <div class="t-item active" data-filter="all" onclick="filterReports('all')">
+            <span class="icon">📋</span>
+            <span>Alle</span>
+            <span class="count" id="count-all">0</span>
+          </div>
+          <div class="t-item" data-filter="open" onclick="filterReports('open')">
+            <span class="icon">🔵</span>
+            <span>Offen</span>
+            <span class="count" id="count-open">0</span>
+          </div>
+          <div class="t-item" data-filter="progress" onclick="filterReports('progress')">
+            <span class="icon">🟠</span>
+            <span>In Bearbeitung</span>
+            <span class="count" id="count-progress">0</span>
+          </div>
+          <div class="t-item" data-filter="closed" onclick="filterReports('closed')">
+            <span class="icon">✅</span>
+            <span>Geschlossen</span>
+            <span class="count" id="count-closed">0</span>
+          </div>
+          
+          <div class="t-section">KATEGORIEN</div>
+          <div class="t-item" data-filter="player" onclick="filterReports('player')">
+            <span class="icon">👤</span>
+            <span>Spieler</span>
+            <span class="count" id="count-player">0</span>
+          </div>
+          <div class="t-item" data-filter="bug" onclick="filterReports('bug')">
+            <span class="icon">🐛</span>
+            <span>Bugs</span>
+            <span class="count" id="count-bug">0</span>
+          </div>
+          <div class="t-item" data-filter="song" onclick="filterReports('song')">
+            <span class="icon">🎵</span>
+            <span>Songs</span>
+            <span class="count" id="count-song">0</span>
+          </div>
+        </div>
+        
+        <div class="team-badge">
+          <div class="label">Deine Rolle</div>
+          <div class="role">
+            <span class="role-icon">👑</span>
+            Administrator
+          </div>
+        </div>
+      </div>
+      
+      <div class="t-main">
+        <div class="t-header">
+          <div class="t-header-title" id="team-title">🎯 Alle Reports</div>
+          <div class="t-header-actions">
+            <div class="t-btn" onclick="refreshReports()">↻ Aktualisieren</div>
+            <div class="t-btn" onclick="showToast('UI würde geschlossen werden', 'success')">✕ Schließen</div>
+          </div>
+        </div>
+        
+        <div class="t-content" id="team-reports">
+          <!-- Reports werden hier dynamisch eingefügt -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div id="toast" class="toast"></div>
+
+<!-- Modal for Report Details -->
+<div class="modal-overlay" id="report-modal" onclick="closeModal()">
+  <div class="report-detail" onclick="event.stopPropagation()">
+    <div class="detail-header">
+      <div class="detail-back" onclick="closeModal()">‹ Zurück</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div class="detail-meta" style="margin:0">
+          <div class="detail-cat">
+            <span class="icon" id="modal-icon">👤</span>
+            <span id="modal-category">Spieler melden</span>
+          </div>
+          <div class="detail-status open" id="modal-status">Offen</div>
+          <div class="detail-priority medium" id="modal-priority">🟡 Mittel</div>
+        </div>
+        <div id="perspective-badge" style="padding:6px 16px;border-radius:20px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.8px"></div>
+      </div>
+      <div class="detail-title" id="modal-title">Report Titel</div>
+      <div class="detail-info">
+        <span><strong>#<span id="modal-id">1</span></strong></span>
+        <span>von <span id="modal-author">Unbekannt</span></span>
+        <span id="modal-time">vor 5 Minuten</span>
+        <span id="modal-target-info"></span>
+      </div>
+    </div>
+    
+    <div class="detail-tabs">
+      <div class="detail-tab active" onclick="switchDetailTab('info')">Info</div>
+      <div class="detail-tab" onclick="switchDetailTab('chat')">Chat <span id="chat-count">(2)</span></div>
+      <div class="detail-tab" onclick="switchDetailTab('files')">Dateien <span id="files-count">(0)</span></div>
+      <div class="detail-tab" id="actions-tab" style="display:none" onclick="switchDetailTab('actions')">Aktionen</div>
+    </div>
+    
+    <div class="detail-content">
+      <!-- Info Tab -->
+      <div class="detail-pane active" id="pane-info">
+        <div class="info-card">
+          <div class="info-label">Beschreibung</div>
+          <div class="info-value" id="modal-desc">Report Beschreibung</div>
+        </div>
+        
+        <div class="info-card" id="link-card" style="display:none">
+          <div class="info-label">Link / Video</div>
+          <div class="info-value">
+            <a href="#" target="_blank" id="modal-link">Link</a>
+          </div>
+        </div>
+        
+        <div class="info-grid">
+          <div class="info-card">
+            <div class="info-label" id="modal-player-label">Spieler</div>
+            <div class="info-value" id="modal-player">Unbekannt</div>
+          </div>
+          <div class="info-card">
+            <div class="info-label">Erstellt</div>
+            <div class="info-value" id="modal-created">vor 5 Minuten</div>
+          </div>
+          <div class="info-card" id="target-card" style="display:none">
+            <div class="info-label">Gemeldeter Spieler</div>
+            <div class="info-value" id="modal-target">-</div>
+          </div>
+          <div class="info-card" id="admin-info-card" style="display:none">
+            <div class="info-label">Bearbeitet von</div>
+            <div class="info-value" id="modal-admin">-</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Chat Tab -->
+      <div class="detail-pane" id="pane-chat">
+        <div class="chat-container">
+          <div class="chat-messages" id="chat-messages">
+            <div class="chat-msg team">
+              <div class="chat-sender">👑 Support-Team</div>
+              <div class="chat-bubble">Danke für deine Meldung! Wir kümmern uns darum.</div>
+              <div class="chat-time">vor 2 Minuten</div>
+            </div>
+            <div class="chat-msg me">
+              <div class="chat-sender">Du</div>
+              <div class="chat-bubble">Vielen Dank für die schnelle Antwort!</div>
+              <div class="chat-time">vor 1 Minute</div>
+            </div>
+          </div>
+          <div class="chat-input-area">
+            <input type="text" class="chat-input" id="chat-input" placeholder="Nachricht schreiben..." onkeydown="if(event.key==='Enter')sendMessage()">
+            <button class="chat-send" onclick="sendMessage()">Senden</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Files Tab -->
+      <div class="detail-pane" id="pane-files">
+        <div class="files-grid" id="files-grid">
+          <div class="empty">
+            <div class="empty-icon">📁</div>
+            <div>Keine Dateien vorhanden</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Actions Tab (Team only) -->
+      <div class="detail-pane" id="pane-actions">
+        <div class="info-label">Status ändern</div>
+        <div class="action-bar">
+          <button class="action-btn status" onclick="changeStatus('open')">🔵 Offen</button>
+          <button class="action-btn status" onclick="changeStatus('progress')">🟠 In Bearbeitung</button>
+          <button class="action-btn status" onclick="changeStatus('closed')">✅ Geschlossen</button>
+        </div>
+        
+        <div class="info-label" style="margin-top:24px">Team Tools</div>
+        <div class="action-bar">
+          <button class="action-btn" onclick="teleportToPlayer()">📍 Zum Spieler teleportieren</button>
+          <button class="action-btn danger" onclick="deleteReport()">🗑️ Report löschen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Demo State
+let reports = [
+  {id:1,category:'player',priority:'high',title:'Spieler XY verwendet Aimbot',desc:'Der Spieler schießt nur Headshots aus unmöglichen Winkeln.',link:'https://clips.twitch.tv/example',status:'open',author:'MaxMustermann',time:'vor 5 Min'},
+  {id:2,category:'bug',priority:'medium',title:'Bug im Fahrzeug-Shop',desc:'Beim Kauf wird manchmal doppelt abgebucht.',link:'',status:'open',author:'PeterSchmidt',time:'vor 1 Std'}
+];
+let selectedCategory = 'player';
+let selectedPriority = 'medium';
+let uploadedFiles = [];
+let currentFilter = 'all';
+
+// View Switching
+function switchView(view){
+  document.querySelectorAll('.view-btn').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById(view+'-view').classList.add('active');
+  if(view==='team') updateTeamStats();
+}
+
+// Player Tabs
+function switchPlayerTab(tab){
+  document.querySelectorAll('.p-tab').forEach(t=>t.classList.remove('active'));
+  event.target.classList.add('active');
+  document.querySelectorAll('.tab-content').forEach(t=>t.style.display='none');
+  document.getElementById('tab-'+tab).style.display='block';
+  if(tab==='my') renderMyReports();
+}
+
+// Category Selection
+function selectCategory(btn){
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedCategory = btn.dataset.cat;
+  document.getElementById('target-field').style.display = selectedCategory==='player'?'block':'none';
+}
+
+// Priority Selection
+function selectPriority(btn){
+  document.querySelectorAll('.pri-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedPriority = btn.dataset.pri;
+}
+
+// File Upload
+function handleFileUpload(e){
+  const files = Array.from(e.target.files);
+  files.forEach(f=>{
+    if(uploadedFiles.length<3){
+      uploadedFiles.push(f);
+    }
+  });
+  renderFileList();
+}
+
+function renderFileList(){
+  const list = document.getElementById('file-list');
+  const area = document.querySelector('.file-upload-area');
+  if(uploadedFiles.length>0){
+    area.classList.add('has-files');
+    list.innerHTML = uploadedFiles.map((f,i)=>`
+      <div class="file-item">
+        ${f.type.startsWith('video')?'🎬':'📷'} ${f.name}
+        <span class="remove" onclick="removeFile(${i})">×</span>
+      </div>
+    `).join('');
+  }else{
+    area.classList.remove('has-files');
+    list.innerHTML = '';
+  }
+}
+
+function removeFile(index){
+  uploadedFiles.splice(index,1);
+  renderFileList();
+}
+
+// Submit Report
+function submitReport(){
+  const title = document.getElementById('title-input').value.trim();
+  const desc = document.getElementById('desc-input').value.trim();
+  const link = document.getElementById('link-input').value.trim();
+  const target = document.getElementById('target-input').value.trim();
+  
+  if(!title){
+    showToast('Bitte Titel eingeben!','error');
+    return;
+  }
+  if(!desc){
+    showToast('Bitte Beschreibung eingeben!','error');
+    return;
+  }
+  
+  const newReport = {
+    id: reports.length+1,
+    category: selectedCategory,
+    priority: selectedPriority,
+    title: title,
+    desc: desc,
+    link: link,
+    target: target,
+    status: 'open',
+    author: 'Du',
+    time: 'Jetzt'
+  };
+  
+  reports.push(newReport);
+  
+  // Clear form
+  document.getElementById('title-input').value='';
+  document.getElementById('desc-input').value='';
+  document.getElementById('link-input').value='';
+  document.getElementById('target-input').value='';
+  uploadedFiles=[];
+  renderFileList();
+  
+  showToast('Report #'+newReport.id+' erfolgreich erstellt!','success');
+  document.getElementById('my-count').textContent = reports.length;
+  updateTeamStats();
+  
+  // Switch to my reports
+  setTimeout(()=>{
+    document.querySelectorAll('.p-tab')[1].click();
+  },800);
+}
+
+// Render My Reports
+function renderMyReports(){
+  const container = document.getElementById('my-reports');
+  if(reports.length===0){
+    container.innerHTML='<div class="empty"><div class="empty-icon">📭</div><div>Keine Reports vorhanden</div></div>';
+    return;
+  }
+  container.innerHTML = reports.map(r=>`
+    <div class="report-item" onclick="viewReport(${r.id})">
+      <div class="report-item-header">
+        <div class="report-item-icon">${getCategoryIcon(r.category)}</div>
+        <div class="report-item-title">${r.title}</div>
+        <div class="report-item-badge ${r.status}">${r.status==='open'?'Offen':'Geschlossen'}</div>
+      </div>
+      <div class="report-item-desc">${r.desc}</div>
+      <div class="report-item-meta">
+        <span>${getPriorityLabel(r.priority)}</span>
+        <span>${r.time}</span>
+        <span>#${r.id}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Team Stats
+function updateTeamStats(){
+  const openCount = reports.filter(r=>r.status==='open').length;
+  const progressCount = 0; // In dieser Demo keine "in progress"
+  const closedCount = reports.filter(r=>r.status==='closed').length;
+  const total = reports.length;
+  
+  document.getElementById('stat-open').textContent = openCount;
+  document.getElementById('stat-progress').textContent = progressCount;
+  document.getElementById('stat-closed').textContent = closedCount;
+  document.getElementById('stat-total').textContent = total;
+  
+  document.getElementById('count-all').textContent = total;
+  document.getElementById('count-open').textContent = openCount;
+  document.getElementById('count-progress').textContent = progressCount;
+  document.getElementById('count-closed').textContent = closedCount;
+  
+  // Category counts
+  document.getElementById('count-player').textContent = reports.filter(r=>r.category==='player').length;
+  document.getElementById('count-bug').textContent = reports.filter(r=>r.category==='bug').length;
+  document.getElementById('count-song').textContent = reports.filter(r=>r.category==='song').length;
+  
+  renderTeamReports(currentFilter);
+}
+
+// Filter Reports
+function filterReports(filter){
+  currentFilter = filter;
+  document.querySelectorAll('.t-item').forEach(i=>i.classList.remove('active'));
+  event.target.classList.add('active');
+  
+  const titles = {
+    all:'Alle Reports',
+    open:'Offene Reports',
+    progress:'In Bearbeitung',
+    closed:'Geschlossene Reports',
+    player:'Spieler-Reports',
+    bug:'Bug-Reports',
+    song:'Song-Reports'
+  };
+  document.getElementById('team-title').textContent = '🎯 '+(titles[filter]||'Alle Reports');
+  
+  renderTeamReports(filter);
+}
+
+// Render Team Reports
+function renderTeamReports(filter){
+  let filtered = reports;
+  if(filter==='open') filtered = reports.filter(r=>r.status==='open');
+  else if(filter==='closed') filtered = reports.filter(r=>r.status==='closed');
+  else if(['player','bug','song'].includes(filter)) filtered = reports.filter(r=>r.category===filter);
+  
+  const container = document.getElementById('team-reports');
+  if(filtered.length===0){
+    container.innerHTML='<div class="empty"><div class="empty-icon">📭</div><div>Keine Reports in diesem Filter</div></div>';
+    return;
+  }
+  
+  container.innerHTML = filtered.map(r=>`
+    <div class="t-report-card" onclick="viewTeamReport(${r.id})">
+      <div class="t-report-header">
+        <div class="t-report-icon">${getCategoryIcon(r.category)}</div>
+        <div class="t-report-id">#${r.id}</div>
+        <div class="t-report-title">${r.title}</div>
+        <div class="t-report-badge ${r.status}">${r.status==='open'?'Offen':'Geschlossen'}</div>
+      </div>
+      <div class="t-report-desc">${r.desc}</div>
+      <div class="t-report-meta">
+        <span>${getPriorityLabel(r.priority)}</span>
+        <span>${r.time}</span>
+        <span>von ${r.author}</span>
+        ${r.link?'<span style="color:var(--cyan)">🔗 Link vorhanden</span>':''}
+      </div>
+    </div>
+  `).join('');
+}
+
+// View Report Detail
+let currentReport = null;
+let isTeamView = false;
+
+function viewReport(id){
+  const report = reports.find(r=>r.id===id);
+  if(!report) return;
+  
+  currentReport = report;
+  isTeamView = false;
+  openReportModal(report);
+}
+
+function viewTeamReport(id){
+  const report = reports.find(r=>r.id===id);
+  if(!report) return;
+  
+  currentReport = report;
+  isTeamView = true;
+  openReportModal(report);
+}
+
+function openReportModal(report){
+  // Set header info
+  document.getElementById('modal-icon').textContent = getCategoryIcon(report.category);
+  document.getElementById('modal-category').textContent = getCategoryLabel(report.category);
+  document.getElementById('modal-status').textContent = report.status==='open'?'Offen':'Geschlossen';
+  document.getElementById('modal-status').className = 'detail-status '+(report.status||'open');
+  document.getElementById('modal-priority').textContent = getPriorityLabel(report.priority);
+  document.getElementById('modal-priority').className = 'detail-priority '+(report.priority||'medium');
+  document.getElementById('modal-title').textContent = report.title;
+  document.getElementById('modal-id').textContent = report.id;
+  document.getElementById('modal-author').textContent = report.author||'Unbekannt';
+  document.getElementById('modal-time').textContent = report.time||'vor einigen Minuten';
+  
+  // Target info
+  if(report.target){
+    document.getElementById('modal-target-info').innerHTML = '<span>Gemeldet: '+report.target+'</span>';
+    document.getElementById('target-card').style.display = 'block';
+    document.getElementById('modal-target').textContent = report.target;
+  }else{
+    document.getElementById('modal-target-info').innerHTML = '';
+    document.getElementById('target-card').style.display = 'none';
+  }
+  
+  // Info tab
+  document.getElementById('modal-desc').textContent = report.desc;
+  document.getElementById('modal-player').textContent = report.author||'Unbekannt';
+  document.getElementById('modal-created').textContent = report.time||'vor einigen Minuten';
+  
+  // Link
+  if(report.link){
+    document.getElementById('link-card').style.display = 'block';
+    document.getElementById('modal-link').href = report.link;
+    document.getElementById('modal-link').textContent = report.link;
+  }else{
+    document.getElementById('link-card').style.display = 'none';
+  }
+  
+  // Files
+  if(uploadedFiles.length>0 && report.id===reports[reports.length-1].id){
+    document.getElementById('files-count').textContent = '('+uploadedFiles.length+')';
+    const grid = document.getElementById('files-grid');
+    grid.innerHTML = uploadedFiles.map(f=>`
+      <div class="file-preview">
+        ${f.type.startsWith('video')?'🎬':'📷'}
+      </div>
+    `).join('');
+  }else{
+    document.getElementById('files-count').textContent = '(0)';
+    document.getElementById('files-grid').innerHTML = '<div class="empty"><div class="empty-icon">📁</div><div>Keine Dateien vorhanden</div></div>';
+  }
+  
+  // Unterschiedliche Ansichten für Spieler vs Team
+  const perspectiveBadge = document.getElementById('perspective-badge');
+  if(isTeamView){
+    // Team-Ansicht: Alle Tabs sichtbar + Aktionen
+    document.getElementById('actions-tab').style.display = 'block';
+    document.getElementById('modal-player-label').textContent = 'Spieler';
+    
+    // Perspektiven-Badge
+    perspectiveBadge.style.background = 'rgba(245,158,11,.15)';
+    perspectiveBadge.style.color = 'var(--org)';
+    perspectiveBadge.style.border = '1px solid rgba(245,158,11,.3)';
+    perspectiveBadge.textContent = '👥 Team-Ansicht';
+    
+    // Team sieht Admin-Info
+    const adminInfo = document.getElementById('admin-info-card');
+    if(adminInfo){
+      adminInfo.style.display = 'block';
+      document.getElementById('modal-admin').textContent = 'Noch nicht bearbeitet';
+    }
+    
+    // Team Chat-Platzhalter
+    document.getElementById('chat-input').placeholder = 'Nachricht als Team-Mitglied...';
+    
+  }else{
+    // Spieler-Ansicht: Keine Aktionen
+    document.getElementById('actions-tab').style.display = 'none';
+    document.getElementById('modal-player-label').textContent = 'Dein Report';
+    
+    // Perspektiven-Badge
+    perspectiveBadge.style.background = 'rgba(0,219,255,.15)';
+    perspectiveBadge.style.color = 'var(--cyan)';
+    perspectiveBadge.style.border = '1px solid rgba(0,219,255,.3)';
+    perspectiveBadge.textContent = '👤 Spieler-Ansicht';
+    
+    // Spieler sieht keine Admin-Info
+    const adminInfo = document.getElementById('admin-info-card');
+    if(adminInfo){
+      adminInfo.style.display = 'none';
+    }
+    
+    // Spieler Chat-Platzhalter
+    document.getElementById('chat-input').placeholder = 'Nachricht an Support-Team...';
+  }
+  
+  // Chat-Nachrichten anpassen
+  updateChatMessages(isTeamView);
+  
+  // Show modal
+  document.getElementById('report-modal').classList.add('show');
+  
+  // Reset to info tab
+  switchDetailTab('info');
+}
+
+function updateChatMessages(isTeam){
+  const messagesContainer = document.getElementById('chat-messages');
+  
+  if(isTeam){
+    // Team sieht: Spieler-Nachrichten + eigene Team-Antworten
+    messagesContainer.innerHTML = `
+      <div class="chat-msg player">
+        <div class="chat-sender">👤 ${currentReport.author||'Spieler'}</div>
+        <div class="chat-bubble">${currentReport.title}</div>
+        <div class="chat-time">${currentReport.time}</div>
+      </div>
+      <div class="chat-msg me">
+        <div class="chat-sender">Du (Team)</div>
+        <div class="chat-bubble">Danke für die Meldung! Wir kümmern uns darum.</div>
+        <div class="chat-time">vor 2 Minuten</div>
+      </div>
+      <div class="chat-msg player">
+        <div class="chat-sender">👤 ${currentReport.author||'Spieler'}</div>
+        <div class="chat-bubble">Vielen Dank für die schnelle Antwort!</div>
+        <div class="chat-time">vor 1 Minute</div>
+      </div>
+    `;
+  }else{
+    // Spieler sieht: Eigene Nachrichten + Team-Antworten
+    messagesContainer.innerHTML = `
+      <div class="chat-msg team">
+        <div class="chat-sender">👑 Support-Team</div>
+        <div class="chat-bubble">Danke für deine Meldung! Wir kümmern uns darum.</div>
+        <div class="chat-time">vor 2 Minuten</div>
+      </div>
+      <div class="chat-msg me">
+        <div class="chat-sender">Du</div>
+        <div class="chat-bubble">Vielen Dank für die schnelle Antwort!</div>
+        <div class="chat-time">vor 1 Minute</div>
+      </div>
+    `;
+  }
+}
+
+function switchDetailTab(tab){
+  document.querySelectorAll('.detail-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.detail-pane').forEach(p=>p.classList.remove('active'));
+  
+  event.target.classList.add('active');
+  document.getElementById('pane-'+tab).classList.add('active');
+}
+
+function sendMessage(){
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if(!msg) return;
+  
+  const messagesContainer = document.getElementById('chat-messages');
+  const msgEl = document.createElement('div');
+  msgEl.className = 'chat-msg me';
+  msgEl.innerHTML = `
+    <div class="chat-sender">${isTeamView?'Du (Team)':'Du'}</div>
+    <div class="chat-bubble">${msg}</div>
+    <div class="chat-time">Jetzt</div>
+  `;
+  messagesContainer.appendChild(msgEl);
+  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  
+  input.value = '';
+  showToast('Nachricht gesendet!','success');
+  
+  // Simulate reply after 2 seconds
+  setTimeout(()=>{
+    const replyEl = document.createElement('div');
+    if(isTeamView){
+      // Team bekommt Antwort vom Spieler
+      replyEl.className = 'chat-msg player';
+      replyEl.innerHTML = `
+        <div class="chat-sender">👤 ${currentReport.author||'Spieler'}</div>
+        <div class="chat-bubble">Danke für die Rückmeldung!</div>
+        <div class="chat-time">Jetzt</div>
+      `;
+    }else{
+      // Spieler bekommt Antwort vom Team
+      replyEl.className = 'chat-msg team';
+      replyEl.innerHTML = `
+        <div class="chat-sender">👑 Support-Team</div>
+        <div class="chat-bubble">Danke für deine Nachricht! Wir bearbeiten das.</div>
+        <div class="chat-time">Jetzt</div>
+      `;
+    }
+    messagesContainer.appendChild(replyEl);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    showToast('Neue Nachricht erhalten','success');
+  },2000);
+}
+
+function changeStatus(status){
+  if(!currentReport) return;
+  
+  const statusLabels = {
+    open:'Offen',
+    progress:'In Bearbeitung',
+    closed:'Geschlossen'
+  };
+  
+  currentReport.status = status;
+  showToast('Status geändert zu: '+statusLabels[status],'success');
+  
+  // Update modal
+  document.getElementById('modal-status').textContent = statusLabels[status];
+  document.getElementById('modal-status').className = 'detail-status '+status;
+  
+  // Update lists
+  updateTeamStats();
+  renderMyReports();
+}
+
+function teleportToPlayer(){
+  showToast('Teleportiere zum Spieler...','success');
+  setTimeout(()=>{
+    showToast('Teleport erfolgreich!','success');
+  },1500);
+}
+
+function deleteReport(){
+  if(!currentReport) return;
+  if(!confirm('Report #'+currentReport.id+' wirklich löschen?')) return;
+  
+  reports = reports.filter(r=>r.id!==currentReport.id);
+  showToast('Report gelöscht','success');
+  closeModal();
+  updateTeamStats();
+  renderMyReports();
+}
+
+// Refresh
+function refreshReports(){
+  updateTeamStats();
+  showToast('Reports aktualisiert!','success');
+}
+
+// Helpers
+function getCategoryIcon(cat){
+  const icons = {player:'👤',bug:'🐛',song:'🎵',station:'📻',question:'❓',other:'📝'};
+  return icons[cat]||'📝';
+}
+
+function getCategoryLabel(cat){
+  const labels = {
+    player:'Spieler melden',
+    bug:'Bug melden',
+    song:'Song melden',
+    station:'Sender melden',
+    question:'Frage',
+    other:'Sonstiges'
+  };
+  return labels[cat]||'Sonstiges';
+}
+
+function getPriorityLabel(pri){
+  const labels = {low:'🟢 Niedrig',medium:'🟡 Mittel',high:'🔴 Hoch'};
+  return labels[pri]||'🟡 Mittel';
+}
+
+// Toast
+function showToast(msg,type='success'){
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.className = 'toast show '+(type||'');
+  setTimeout(()=>{
+    toast.classList.remove('show');
+  },3000);
+}
+
+// Close Modal
+function closeModal(){
+  document.getElementById('report-modal').classList.remove('show');
+}
+
+// Init
+updateTeamStats();
+renderMyReports();
+</script>
+
+</body>
+</html>

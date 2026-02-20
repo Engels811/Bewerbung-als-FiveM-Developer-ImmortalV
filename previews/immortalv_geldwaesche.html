@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IMMORTAL V — Dark Market Geldwäsche</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #0d0f14;
+  --panel:     #13161e;
+  --card:      #181c27;
+  --card2:     #1e2333;
+  --border:    rgba(255,255,255,0.07);
+  --border2:   rgba(255,255,255,0.12);
+  --blue:      #4a9fff;
+  --blue2:     #1a6fd4;
+  --cyan:      #00d4ff;
+  --orange:    #ff8c00;
+  --red:       #ff4d4d;
+  --green:     #00e676;
+  --yellow:    #ffd600;
+  --purple:    #a855f7;
+  --text:      #e2e8f0;
+  --text2:     #6b7a99;
+  --text3:     #3d4a66;
+  --live:      #00e676;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+/* OUTER WRAPPER — simulates FiveM NUI */
+.nui-wrapper {
+  width: 820px;
+  max-width: 100%;
+  background: var(--panel);
+  border-radius: 16px;
+  border: 1px solid var(--border2);
+  box-shadow: 0 32px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(74,159,255,0.05);
+  overflow: hidden;
+  position: relative;
+}
+
+/* HEADER */
+.header {
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(180deg, rgba(74,159,255,0.04) 0%, transparent 100%);
+}
+.header-left {}
+.header-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 2px;
+}
+.header-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: 0.5px;
+}
+.header-right {
+  display: flex;
+  gap: 10px;
+}
+.balance-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--card);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 8px 14px;
+}
+.balance-chip .bc-icon { font-size: 16px; }
+.balance-chip .bc-info {}
+.balance-chip .bc-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--orange);
+  line-height: 1;
+}
+.balance-chip .bc-val.clean { color: var(--yellow); }
+.balance-chip .bc-label {
+  font-size: 9px;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* TABS */
+.tabs {
+  display: flex;
+  gap: 4px;
+  padding: 14px 24px 0;
+  border-bottom: 1px solid var(--border);
+}
+.tab-btn {
+  padding: 8px 20px 12px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--text2);
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all .2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.tab-btn::before {
+  content: '•';
+  font-size: 10px;
+  opacity: 0;
+  transition: opacity .2s;
+}
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active {
+  color: var(--text);
+  border-bottom-color: var(--blue);
+}
+.tab-btn.active::before { opacity: 1; color: var(--blue); }
+
+/* BODY */
+.nui-body { padding: 20px 24px 24px; }
+
+/* SECTION */
+.section { display: none; }
+.section.active { display: block; }
+
+/* LIVE SERVICE BANNER */
+.live-banner {
+  background: var(--card);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.live-left {}
+.live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0,230,118,0.12);
+  border: 1px solid rgba(0,230,118,0.3);
+  border-radius: 20px;
+  padding: 3px 10px 3px 8px;
+  margin-bottom: 8px;
+}
+.live-dot {
+  width: 6px; height: 6px;
+  background: var(--live);
+  border-radius: 50%;
+  animation: blink 1.4s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:.3;} }
+.live-badge span { font-size: 10px; font-weight: 700; letter-spacing: 2px; color: var(--live); text-transform: uppercase; }
+.live-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+.live-sub { font-size: 12px; color: var(--text2); }
+.live-stats {
+  display: flex;
+  gap: 20px;
+}
+.live-stat {
+  text-align: center;
+}
+.live-stat .ls-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.live-stat .ls-key {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text2);
+}
+
+/* SERVICE CARDS */
+.service-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--text2);
+  margin-bottom: 12px;
+}
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.service-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all .2s;
+  position: relative;
+  overflow: hidden;
+}
+.service-card:hover {
+  border-color: var(--border2);
+  background: var(--card2);
+}
+.service-card.selected {
+  border-color: var(--blue);
+  background: rgba(74,159,255,0.07);
+}
+.service-card.selected::after {
+  content: '✓';
+  position: absolute;
+  top: 10px; right: 12px;
+  font-size: 14px;
+  color: var(--blue);
+  font-weight: 700;
+}
+.sc-icon { font-size: 22px; margin-bottom: 10px; }
+.sc-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.sc-desc { font-size: 11px; color: var(--text2); line-height: 1.4; margin-bottom: 12px; }
+.sc-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.tag {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+}
+.tag-red    { background: rgba(255,77,77,0.15);  color: var(--red);    border: 1px solid rgba(255,77,77,0.25); }
+.tag-green  { background: rgba(0,230,118,0.12);  color: var(--green);  border: 1px solid rgba(0,230,118,0.25); }
+.tag-blue   { background: rgba(74,159,255,0.12); color: var(--blue);   border: 1px solid rgba(74,159,255,0.25); }
+.tag-orange { background: rgba(255,140,0,0.15);  color: var(--orange); border: 1px solid rgba(255,140,0,0.25); }
+.tag-purple { background: rgba(168,85,247,0.15); color: var(--purple); border: 1px solid rgba(168,85,247,0.25); }
+.tag-yellow { background: rgba(255,214,0,0.12);  color: var(--yellow); border: 1px solid rgba(255,214,0,0.25); }
+
+/* MENGE */
+.menge-wrap {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+.menge-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.menge-avail {
+  font-size: 12px;
+  color: var(--text2);
+}
+.menge-avail span {
+  font-family: 'DM Mono', monospace;
+  color: var(--orange);
+  font-weight: 500;
+}
+.input-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.menge-input {
+  flex: 1;
+  background: var(--card2);
+  border: 1px solid var(--border2);
+  border-radius: 7px;
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  font-size: 14px;
+  padding: 10px 14px;
+  outline: none;
+  transition: border-color .2s;
+}
+.menge-input:focus { border-color: var(--blue); }
+.menge-input::placeholder { color: var(--text3); font-size: 13px; }
+.max-btn {
+  background: var(--blue2);
+  border: none;
+  border-radius: 7px;
+  color: #fff;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 10px 18px;
+  cursor: pointer;
+  transition: all .2s;
+}
+.max-btn:hover { background: var(--blue); }
+.quick-btns {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.quick-btn {
+  flex: 1;
+  background: var(--card2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text2);
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 6px 4px;
+  cursor: pointer;
+  transition: all .2s;
+  text-align: center;
+}
+.quick-btn:hover { border-color: var(--border2); color: var(--text); background: rgba(255,255,255,0.05); }
+
+/* SLIDER */
+.range-wrap { padding: 2px 0; }
+input[type=range] {
+  width: 100%;
+  -webkit-appearance: none;
+  height: 3px;
+  background: linear-gradient(90deg, var(--blue) var(--pct, 0%), var(--card2) var(--pct, 0%));
+  outline: none;
+  border-radius: 2px;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--blue);
+  cursor: pointer;
+  border: 2px solid var(--panel);
+  box-shadow: 0 0 8px rgba(74,159,255,0.5);
+}
+
+/* ORDER OVERVIEW */
+.order-wrap {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.order-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,0.02);
+}
+.order-header .oh-icon { font-size: 13px; color: var(--text2); }
+.order-header .oh-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text2);
+}
+.order-rows { padding: 4px 0; }
+.order-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  font-size: 13px;
+}
+.order-row:last-child { border: none; }
+.order-row .or-label { color: var(--text2); }
+.order-row .or-label.red { color: var(--red); }
+.order-row .or-label.gold { color: var(--orange); }
+.order-row .or-label.green { color: var(--green); }
+.order-row .or-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--text);
+}
+.order-row .or-val.red { color: var(--red); }
+.order-row .or-val.green { color: var(--green); }
+.order-row .or-val.gold { color: var(--orange); }
+.order-divider { height: 1px; background: var(--border2); margin: 0 16px; }
+.order-total {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 16px;
+  font-weight: 700;
+  font-size: 14px;
+}
+.order-total .ot-label { color: var(--text); }
+.order-total .ot-val {
+  font-family: 'DM Mono', monospace;
+  color: var(--green);
+  font-size: 15px;
+}
+
+/* WASH BTN */
+.wash-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, #1a6fd4, #4a9fff);
+  color: #fff;
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all .25s;
+  position: relative;
+  overflow: hidden;
+}
+.wash-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+  opacity: 0;
+  transition: opacity .2s;
+}
+.wash-btn:hover::before { opacity: 1; }
+.wash-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(74,159,255,0.35); }
+.wash-btn:active { transform: translateY(0); }
+.wash-btn:disabled {
+  background: var(--card2);
+  color: var(--text2);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* COOLDOWN */
+.cooldown-card {
+  background: var(--card);
+  border: 1px solid rgba(255,140,0,0.25);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  display: none;
+}
+.cooldown-card.visible { display: block; }
+.cd-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.cd-top .cd-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--orange);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.cd-timer {
+  font-family: 'DM Mono', monospace;
+  font-size: 14px;
+  color: var(--orange);
+  font-weight: 500;
+}
+.cd-bar {
+  height: 4px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.cd-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--orange), var(--yellow));
+  border-radius: 2px;
+  transition: width .5s linear;
+  box-shadow: 0 0 8px rgba(255,140,0,0.4);
+}
+
+/* ACTIVE PROCESSES */
+.process-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.pi-icon { font-size: 22px; flex-shrink: 0; }
+.pi-info { flex: 1; min-width: 0; }
+.pi-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.pi-sub {
+  font-size: 11px;
+  color: var(--text2);
+  font-family: 'DM Mono', monospace;
+  margin-bottom: 8px;
+}
+.pi-bar { height: 3px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
+.pi-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--blue), var(--cyan));
+  border-radius: 2px;
+  transition: width .5s;
+}
+.pi-timer {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  color: var(--blue);
+  font-weight: 500;
+  flex-shrink: 0;
+}
+.collect-btn {
+  background: rgba(0,230,118,0.15);
+  border: 1px solid rgba(0,230,118,0.3);
+  border-radius: 6px;
+  color: var(--green);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 1px;
+  padding: 6px 14px;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all .2s;
+  display: none;
+}
+.collect-btn:hover { background: rgba(0,230,118,0.25); }
+.collect-btn.show { display: block; }
+
+/* LEVEL SECTION */
+.level-banner {
+  background: var(--card);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.level-orb {
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  border: 2px solid var(--blue);
+  background: rgba(74,159,255,0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 0 20px rgba(74,159,255,0.2);
+}
+.lo-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--blue);
+  line-height: 1;
+}
+.lo-lbl { font-size: 8px; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; }
+.level-info { flex: 1; }
+.li-title { font-weight: 700; font-size: 16px; margin-bottom: 2px; }
+.li-perk { font-size: 12px; color: var(--green); margin-bottom: 8px; }
+.xp-bar { height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
+.xp-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--blue), var(--cyan));
+  border-radius: 2px;
+}
+.xp-text { font-size: 10px; color: var(--text2); margin-top: 4px; font-family: 'DM Mono', monospace; }
+
+/* LEVEL TABLE */
+.level-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.level-table th {
+  text-align: left;
+  padding: 8px 12px;
+  background: var(--card2);
+  color: var(--text2);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+}
+.level-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  color: var(--text);
+}
+.level-table tr.current td { background: rgba(74,159,255,0.06); }
+.level-table tr.current td:first-child { border-left: 2px solid var(--blue); }
+
+/* ADMIN */
+.admin-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 16px; }
+.admin-stat {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  text-align: center;
+}
+.as-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--blue);
+  margin-bottom: 4px;
+}
+.as-lbl { font-size: 9px; color: var(--text2); text-transform: uppercase; letter-spacing: 1.5px; }
+
+.faction-table { width: 100%; border-collapse: collapse; }
+.faction-table th {
+  text-align: left;
+  padding: 8px 14px;
+  background: var(--card2);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text2);
+  border-bottom: 1px solid var(--border);
+}
+.faction-table td {
+  padding: 11px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  font-size: 12px;
+}
+.faction-table tr:hover td { background: rgba(255,255,255,0.01); }
+.fbar-wrap { width: 100px; }
+.fbar { height: 3px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; margin-top: 4px; }
+.fbar-fill { height: 100%; background: linear-gradient(90deg, var(--blue), var(--cyan)); }
+
+/* DEMO BAR */
+.demo-bar {
+  background: #0a0c11;
+  border-top: 1px solid var(--border);
+  padding: 10px 20px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.demo-lbl {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--text2);
+  text-transform: uppercase;
+}
+.demo-input {
+  background: var(--card2);
+  border: 1px solid var(--border2);
+  border-radius: 5px;
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  padding: 5px 10px;
+  width: 130px;
+  outline: none;
+}
+.demo-input:focus { border-color: var(--blue); }
+.demo-btn {
+  background: var(--blue2);
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 14px;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: background .2s;
+}
+.demo-btn:hover { background: var(--blue); }
+.demo-btn.admin-an { background: rgba(0,230,118,0.2); color: var(--green); border: 1px solid rgba(0,230,118,0.3); }
+.demo-btn.admin-aus { background: rgba(255,77,77,0.15); color: var(--red); border: 1px solid rgba(255,77,77,0.25); }
+
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 20px; right: 20px;
+  background: var(--card);
+  border: 1px solid var(--border2);
+  border-left: 3px solid var(--green);
+  border-radius: 10px;
+  padding: 14px 18px;
+  font-size: 13px;
+  z-index: 9999;
+  transform: translateX(120%);
+  transition: transform .3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  max-width: 280px;
+}
+.toast.show { transform: translateX(0); }
+.toast.err { border-left-color: var(--red); }
+.toast .t-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 3px;
+}
+.toast.err .t-title { color: var(--red); }
+
+/* EMPTY */
+.empty {
+  text-align: center;
+  padding: 32px;
+  color: var(--text2);
+  font-size: 13px;
+}
+.empty .e-icon { font-size: 32px; margin-bottom: 8px; }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+@keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+.nui-body > * { animation: fadeIn .25s ease forwards; }
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="t-title" id="toast-title">Info</div>
+  <div id="toast-msg"></div>
+</div>
+
+<div style="width:100%;max-width:820px;">
+  <!-- SERVER LABEL -->
+  <div style="text-align:center;margin-bottom:16px;">
+    <div style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;letter-spacing:3px;color:#fff;text-shadow:0 0 30px rgba(74,159,255,0.4);">IMMORTAL<span style="color:var(--blue);">V</span></div>
+    <div style="font-size:10px;letter-spacing:3px;color:var(--text2);text-transform:uppercase;margin-top:2px;">Dark Market System</div>
+  </div>
+
+  <div class="nui-wrapper">
+    <!-- HEADER -->
+    <div class="header">
+      <div class="header-left">
+        <div class="header-label">Dark Market</div>
+        <div class="header-title">Geldwäsche System</div>
+      </div>
+      <div class="header-right">
+        <div class="balance-chip">
+          <div class="bc-icon">🧺</div>
+          <div class="bc-info">
+            <div class="bc-val" id="hdr-dirty">0</div>
+            <div class="bc-label">Schmutzgeld Items</div>
+          </div>
+        </div>
+        <div class="balance-chip">
+          <div class="bc-icon">🪙</div>
+          <div class="bc-info">
+            <div class="bc-val clean" id="hdr-clean">0</div>
+            <div class="bc-label">Clean Money</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('waschen',this)">Waschen</button>
+      <button class="tab-btn" onclick="switchTab('aktiv',this)">Aktive Prozesse <span id="notif" style="display:none;background:var(--red);border-radius:50%;width:6px;height:6px;display:none;"></span></button>
+      <button class="tab-btn" onclick="switchTab('level',this)">Level & Perks</button>
+      <button class="tab-btn" id="admin-tab" onclick="switchTab('admin',this)" style="display:none;">Admin</button>
+    </div>
+
+    <!-- NUI BODY -->
+    <div class="nui-body">
+
+      <!-- ==================== WASCHEN ==================== -->
+      <div class="section active" id="tab-waschen">
+
+        <!-- LIVE BANNER -->
+        <div class="live-banner">
+          <div class="live-left">
+            <div class="live-badge"><div class="live-dot"></div><span>Live-Service</span></div>
+            <div class="live-title">Geldwäsche</div>
+            <div class="live-sub">Schmutzgeld Items → Clean Money Items</div>
+          </div>
+          <div class="live-stats">
+            <div class="live-stat">
+              <div class="ls-val" id="ls-gebuehr" style="color:var(--red)">20%</div>
+              <div class="ls-key">Gebühr</div>
+            </div>
+            <div class="live-stat">
+              <div class="ls-val" id="ls-frak" style="color:var(--orange)">10%</div>
+              <div class="ls-key">Frak</div>
+            </div>
+            <div class="live-stat">
+              <div class="ls-val" style="color:var(--text2)">∞</div>
+              <div class="ls-key">Kapazität</div>
+            </div>
+            <div class="live-stat">
+              <div class="ls-val" id="ls-erhaelt" style="color:var(--green)">70%</div>
+              <div class="ls-key">Erhält</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LEVEL MINI -->
+        <div class="level-banner">
+          <div class="level-orb">
+            <div class="lo-num" id="lv-num">1</div>
+            <div class="lo-lbl">Level</div>
+          </div>
+          <div class="level-info">
+            <div class="li-title" id="lv-title">Frischling</div>
+            <div class="li-perk" id="lv-perk">✦ 25% Fehlschlag-Chance</div>
+            <div class="xp-bar"><div class="xp-fill" id="lv-xp-fill" style="width:0%"></div></div>
+            <div class="xp-text" id="lv-xp-text">0 / 200 XP</div>
+          </div>
+        </div>
+
+        <!-- SERVICE WÄHLEN -->
+        <div class="service-label">Service wählen</div>
+        <div class="service-grid">
+          <div class="service-card" id="svc-standard" onclick="selectService('standard')">
+            <div class="sc-icon">🧺</div>
+            <div class="sc-name">Standard Wash</div>
+            <div class="sc-desc">Zuverlässige Basiswäsche mit Cooldown</div>
+            <div class="sc-tags">
+              <span class="tag tag-red">-20%</span>
+              <span class="tag tag-orange">★ Beliebt</span>
+            </div>
+          </div>
+          <div class="service-card selected" id="svc-express" onclick="selectService('express')">
+            <div class="sc-icon">⚡</div>
+            <div class="sc-name">Express Wash</div>
+            <div class="sc-desc">Höhere Gebühr, dafür sofort ohne Cooldown</div>
+            <div class="sc-tags">
+              <span class="tag tag-red">-30%</span>
+              <span class="tag tag-blue">⚡ Schnell</span>
+            </div>
+          </div>
+          <div class="service-card" id="svc-vip" onclick="selectService('vip')">
+            <div class="sc-icon">💎</div>
+            <div class="sc-name">VIP Wash</div>
+            <div class="sc-desc">Niedrigste Gebühr für Frak-Mitglieder</div>
+            <div class="sc-tags">
+              <span class="tag tag-green">-12%</span>
+              <span class="tag tag-purple">💎 VIP</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- MENGE -->
+        <div class="menge-wrap">
+          <div class="menge-header">
+            <div class="service-label" style="margin:0">Menge</div>
+            <div class="menge-avail">Verfügbar: <span id="avail-amount">0</span></div>
+          </div>
+          <div class="input-row">
+            <input class="menge-input" type="number" id="wash-input" placeholder="Anzahl eingeben..." oninput="updateCalc()" min="1000">
+            <button class="max-btn" onclick="setMax()">MAX</button>
+          </div>
+          <div class="quick-btns">
+            <button class="quick-btn" onclick="setAmount(10000)">10K</button>
+            <button class="quick-btn" onclick="setAmount(100000)">100K</button>
+            <button class="quick-btn" onclick="setAmount(1000000)">1M</button>
+            <button class="quick-btn" onclick="setAmount(100000000)">100M</button>
+            <button class="quick-btn" onclick="setAmount(1000000000)">1B</button>
+          </div>
+          <div class="range-wrap">
+            <input type="range" id="wash-range" min="0" max="100" value="0" oninput="onRange(this)">
+          </div>
+        </div>
+
+        <!-- COOLDOWN -->
+        <div class="cooldown-card" id="cd-card">
+          <div class="cd-top">
+            <div class="cd-label">⏳ Cooldown aktiv</div>
+            <div class="cd-timer" id="cd-timer">10:00</div>
+          </div>
+          <div class="cd-bar"><div class="cd-fill" id="cd-fill" style="width:0%"></div></div>
+        </div>
+
+        <!-- ORDER OVERVIEW -->
+        <div class="order-wrap">
+          <div class="order-header">
+            <span class="oh-icon">📋</span>
+            <span class="oh-label">Bestellübersicht</span>
+          </div>
+          <div class="order-rows">
+            <div class="order-row">
+              <span class="or-label">Eingabe</span>
+              <span class="or-val" id="ov-input">0 Items</span>
+            </div>
+            <div class="order-row">
+              <span class="or-label red" id="ov-fee-lbl">Waschgebühr (30%)</span>
+              <span class="or-val red" id="ov-fee">—</span>
+            </div>
+            <div class="order-row">
+              <span class="or-label gold" id="ov-frak-lbl">Frak-Anteil (10%)</span>
+              <span class="or-val gold" id="ov-frak">—</span>
+            </div>
+            <div class="order-row">
+              <span class="or-label">Fehlschlag-Chance</span>
+              <span class="or-val red" id="ov-fail">25%</span>
+            </div>
+            <div class="order-row">
+              <span class="or-label">Dauer</span>
+              <span class="or-val" id="ov-dur">—</span>
+            </div>
+          </div>
+          <div class="order-divider"></div>
+          <div class="order-total">
+            <span class="ot-label">Du erhältst</span>
+            <span class="ot-val" id="ov-you">0 Items</span>
+          </div>
+        </div>
+
+        <button class="wash-btn" id="wash-btn" onclick="startWash()">💰 Jetzt waschen</button>
+      </div>
+
+      <!-- ==================== AKTIV ==================== -->
+      <div class="section" id="tab-aktiv">
+        <div style="margin-bottom:16px;">
+          <div class="service-label">Aktive Waschvorgänge</div>
+          <div id="active-list"><div class="empty"><div class="e-icon">⏳</div>Keine aktiven Vorgänge.</div></div>
+        </div>
+        <div>
+          <div class="service-label">Bereit zur Abholung</div>
+          <div id="ready-list"><div class="empty"><div class="e-icon">🪙</div>Kein Geld bereit.</div></div>
+        </div>
+      </div>
+
+      <!-- ==================== LEVEL ==================== -->
+      <div class="section" id="tab-level">
+        <div class="level-banner" style="margin-bottom:16px;">
+          <div class="level-orb">
+            <div class="lo-num" id="big-lvl-num">1</div>
+            <div class="lo-lbl">Level</div>
+          </div>
+          <div class="level-info">
+            <div class="li-title" id="big-lvl-title">Frischling</div>
+            <div class="li-perk" id="big-lvl-perk">✦ 25% Fehlschlag-Chance</div>
+            <div class="xp-bar"><div class="xp-fill" id="big-xp-fill" style="width:0%"></div></div>
+            <div class="xp-text" id="big-xp-text">0 / 200 XP</div>
+          </div>
+        </div>
+
+        <div class="order-wrap">
+          <div class="order-header"><span class="oh-icon">⭐</span><span class="oh-label">XP verdienen</span></div>
+          <div class="order-rows">
+            <div class="order-row"><span class="or-label">Pro $1.000 gewaschen</span><span class="or-val" style="color:var(--blue)">+5 XP</span></div>
+            <div class="order-row"><span class="or-label">Erfolgreicher Wash</span><span class="or-val" style="color:var(--blue)">+50 XP Bonus</span></div>
+            <div class="order-row"><span class="or-label">Max-Betrag gewaschen</span><span class="or-val" style="color:var(--blue)">+100 XP Bonus</span></div>
+          </div>
+        </div>
+
+        <div class="order-wrap" style="margin-top:12px;">
+          <div class="order-header"><span class="oh-icon">📊</span><span class="oh-label">Level-Übersicht</span></div>
+          <table class="level-table">
+            <thead>
+              <tr>
+                <th>LVL</th><th>Titel</th><th>XP</th><th>Fehlschlag</th><th>Perk</th>
+              </tr>
+            </thead>
+            <tbody id="level-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ==================== ADMIN ==================== -->
+      <div class="section" id="tab-admin">
+        <div class="admin-grid">
+          <div class="admin-stat"><div class="as-val">$2.4M</div><div class="as-lbl">Gesamt gewaschen</div></div>
+          <div class="admin-stat"><div class="as-val" id="ad-active">0</div><div class="as-lbl">Aktive Vorgänge</div></div>
+          <div class="admin-stat"><div class="as-val">$340K</div><div class="as-lbl">Frak-Einnahmen heute</div></div>
+          <div class="admin-stat"><div class="as-val">23%</div><div class="as-lbl">Fehlschlag-Rate</div></div>
+        </div>
+        <div class="order-wrap">
+          <div class="order-header"><span class="oh-icon">🏛️</span><span class="oh-label">Fraktions-Übersicht</span></div>
+          <table class="faction-table">
+            <thead>
+              <tr><th>Fraktion</th><th>Member</th><th>Gesamt gewaschen</th><th>Frak-Einnahmen</th><th>Status</th><th>Volumen</th></tr>
+            </thead>
+            <tbody id="faction-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /nui-body -->
+
+    <!-- DEMO BAR -->
+    <div class="demo-bar">
+      <span class="demo-lbl">Demo</span>
+      <span class="demo-lbl" style="color:var(--orange)">Schmutzgeld:</span>
+      <input class="demo-input" id="demo-dirty" type="number" value="100000000" placeholder="Schmutzgeld">
+      <span class="demo-lbl" style="color:var(--yellow)">Clean:</span>
+      <input class="demo-input" id="demo-clean" type="number" value="0" placeholder="Clean Money" style="width:80px">
+      <button class="demo-btn" onclick="applyDemo()">Setzen</button>
+      <span class="demo-lbl">Gebühr %:</span>
+      <input class="demo-input" id="demo-fee" type="number" value="20" style="width:60px">
+      <span class="demo-lbl">Frak %:</span>
+      <input class="demo-input" id="demo-frak" type="number" value="10" style="width:60px">
+      <button class="demo-btn admin-an" onclick="toggleAdmin(true)">Admin AN</button>
+      <button class="demo-btn admin-aus" onclick="toggleAdmin(false)">Admin AUS</button>
+    </div>
+  </div><!-- /nui-wrapper -->
+</div>
+
+<script>
+// ==================== CONFIG ====================
+const LEVELS = [
+  { level:1, title:"Frischling",       xp:0,    fail:25, perk:"Zugang freigeschaltet" },
+  { level:2, title:"Laufbursche",      xp:200,  fail:20, perk:"+5% Kapazität" },
+  { level:3, title:"Straßenläufer",    xp:500,  fail:15, perk:"+10% Kapazität" },
+  { level:4, title:"Gangster",         xp:1000, fail:12, perk:"Cooldown -1 Min" },
+  { level:5, title:"Unterwelt-Profi",  xp:2000, fail:8,  perk:"Cooldown -2 Min" },
+  { level:6, title:"Kartel-Boss",      xp:3500, fail:5,  perk:"Prioritätslot" },
+  { level:7, title:"Finanzmagnat",     xp:5500, fail:2,  perk:"Gebühr -5%" },
+  { level:8, title:"Der Pate",         xp:8000, fail:0,  perk:"0% Risiko — LEGEND" },
+];
+const SERVICES = {
+  standard: { fee:0.20, cooldown:600,  label:"Standard" },
+  express:  { fee:0.30, cooldown:0,    label:"Express"  },
+  vip:      { fee:0.12, cooldown:300,  label:"VIP"      },
+};
+const FACTIONS = [
+  { name:"Los Santos Mafia", members:12, total:540000,  frak:54000 },
+  { name:"Ballas",           members:8,  total:310000,  frak:24800 },
+  { name:"Vagos",            members:15, total:820000,  frak:98400 },
+  { name:"Grove Street",     members:6,  total:180000,  frak:18000 },
+  { name:"Merryweather",     members:20, total:1200000, frak:144000 },
+];
+
+// ==================== STATE ====================
+let dirty     = 100000000;
+let clean     = 0;
+let playerXP  = 0;
+let playerLvl = 1;
+let feeBase   = 0.20;
+let frakBase  = 0.10;
+let selSvc    = 'express';
+let activeWashes = [];
+let readyWashes  = [];
+let cdRemain  = 0;
+let cdTotal   = 0;
+let cdInterval= null;
+let isAdmin   = false;
+
+// ==================== INIT ====================
+function init() {
+  buildLevelTable();
+  buildFactionTable();
+  updateHeader();
+  updateLevelUI();
+  updateCalc();
+  updateLiveBanner();
+}
+
+function fmt(n) {
+  if(n >= 1e9) return (n/1e9).toFixed(2)+'B';
+  if(n >= 1e6) return (n/1e6).toFixed(2)+'M';
+  if(n >= 1e3) return (n/1e3).toFixed(1)+'K';
+  return n.toLocaleString();
+}
+
+function buildLevelTable() {
+  const tb = document.getElementById('level-tbody');
+  tb.innerHTML = '';
+  LEVELS.forEach(l => {
+    const tr = document.createElement('tr');
+    if(l.level === playerLvl) tr.className = 'current';
+    tr.innerHTML = `
+      <td><span class="tag ${l.level===playerLvl?'tag-blue':''}">${l.level}</span></td>
+      <td>${l.title}</td>
+      <td style="font-family:'DM Mono',monospace">${l.xp.toLocaleString()} XP</td>
+      <td style="color:${l.fail===0?'var(--green)':'var(--red)'};">${l.fail}%</td>
+      <td style="color:var(--text2);font-size:11px">${l.perk}</td>
+    `;
+    tb.appendChild(tr);
+  });
+}
+
+function buildFactionTable() {
+  const tb = document.getElementById('faction-tbody');
+  const maxT = Math.max(...FACTIONS.map(f=>f.total));
+  tb.innerHTML = '';
+  FACTIONS.forEach(f => {
+    const pct = Math.round(f.total/maxT*100);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="font-weight:600">${f.name}</td>
+      <td>${f.members}</td>
+      <td style="font-family:'DM Mono',monospace">$${fmt(f.total)}</td>
+      <td style="font-family:'DM Mono',monospace;color:var(--orange)">$${fmt(f.frak)}</td>
+      <td><span class="tag tag-green" style="font-size:10px">Aktiv</span></td>
+      <td>
+        <div class="fbar-wrap">
+          <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text2)">${pct}%</div>
+          <div class="fbar"><div class="fbar-fill" style="width:${pct}%"></div></div>
+        </div>
+      </td>
+    `;
+    tb.appendChild(tr);
+  });
+}
+
+// ==================== HEADER ====================
+function updateHeader() {
+  document.getElementById('hdr-dirty').textContent = fmt(dirty);
+  document.getElementById('hdr-clean').textContent = fmt(clean);
+  document.getElementById('avail-amount').textContent = fmt(dirty);
+}
+
+// ==================== LEVEL ====================
+function updateLevelUI() {
+  const l = LEVELS[playerLvl-1];
+  const next = LEVELS[playerLvl];
+  const xpBase = l.xp;
+  const xpNext = next ? next.xp : l.xp;
+  const pct = next ? Math.min(100, (playerXP - xpBase) / (xpNext - xpBase) * 100) : 100;
+
+  ['lv-num','big-lvl-num'].forEach(id => document.getElementById(id).textContent = playerLvl);
+  ['lv-title','big-lvl-title'].forEach(id => document.getElementById(id).textContent = l.title);
+  ['lv-perk','big-lvl-perk'].forEach(id => document.getElementById(id).textContent = `✦ ${l.fail}% Fehlschlag-Chance`);
+  ['lv-xp-fill','big-xp-fill'].forEach(id => document.getElementById(id).style.width = pct + '%');
+  const xt = next ? `${playerXP.toLocaleString()} / ${xpNext.toLocaleString()} XP` : 'MAX LEVEL';
+  ['lv-xp-text','big-xp-text'].forEach(id => document.getElementById(id).textContent = xt);
+
+  document.getElementById('ov-fail').textContent = l.fail + '%';
+  buildLevelTable();
+}
+
+// ==================== LIVE BANNER ====================
+function updateLiveBanner() {
+  const svc = SERVICES[selSvc];
+  const fee = Math.round(svc.fee * 100);
+  const frak = Math.round(frakBase * 100);
+  const erh = 100 - fee - frak;
+  document.getElementById('ls-gebuehr').textContent = fee + '%';
+  document.getElementById('ls-frak').textContent = frak + '%';
+  document.getElementById('ls-erhaelt').textContent = erh + '%';
+  document.getElementById('ov-fee-lbl').textContent = `Waschgebühr (${fee}%)`;
+  document.getElementById('ov-frak-lbl').textContent = `Frak-Anteil (${frak}%)`;
+}
+
+// ==================== SERVICE SELECT ====================
+function selectService(s) {
+  selSvc = s;
+  document.querySelectorAll('.service-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('svc-'+s).classList.add('selected');
+  updateLiveBanner();
+  updateCalc();
+}
+
+// ==================== AMOUNT ====================
+function setAmount(n) {
+  const capped = Math.min(n, dirty);
+  document.getElementById('wash-input').value = capped;
+  const pct = dirty > 0 ? Math.round(capped/dirty*100) : 0;
+  const r = document.getElementById('wash-range');
+  r.value = pct;
+  r.style.setProperty('--pct', pct+'%');
+  updateCalc();
+}
+function setMax() { setAmount(dirty); }
+function onRange(el) {
+  const pct = parseInt(el.value);
+  el.style.setProperty('--pct', pct+'%');
+  const amt = Math.floor(dirty * pct / 100);
+  document.getElementById('wash-input').value = amt;
+  updateCalc();
+}
+function updateCalc() {
+  const amount = parseInt(document.getElementById('wash-input').value) || 0;
+  const svc = SERVICES[selSvc];
+  const fee = Math.floor(amount * svc.fee);
+  const afterFee = amount - fee;
+  const frakCut = Math.floor(afterFee * frakBase);
+  const you = afterFee - frakCut;
+  const dur = svc.cooldown > 0 ? Math.max(10, Math.floor(amount/10000)) + 's' : 'Sofort';
+
+  document.getElementById('ov-input').textContent = fmt(amount) + ' Items';
+  document.getElementById('ov-fee').textContent = amount ? '-' + fmt(fee) : '—';
+  document.getElementById('ov-frak').textContent = amount ? '-' + fmt(frakCut) : '—';
+  document.getElementById('ov-dur').textContent = amount ? dur : '—';
+  document.getElementById('ov-you').textContent = amount ? fmt(you) + ' Items' : '0 Items';
+}
+
+// ==================== WASH ====================
+function startWash() {
+  const amount = parseInt(document.getElementById('wash-input').value);
+  if(!amount || amount < 1000) return toast('Fehler', 'Mindestbetrag: 1.000!', true);
+  if(amount > dirty) return toast('Fehler', 'Nicht genug Schmutzgeld!', true);
+  if(cdRemain > 0) return toast('Fehler', 'Cooldown noch aktiv!', true);
+
+  const svc = SERVICES[selSvc];
+  const lvl = LEVELS[playerLvl-1];
+  const failRoll = Math.random() * 100;
+
+  dirty -= amount;
+  updateHeader();
+  document.getElementById('wash-input').value = '';
+  updateCalc();
+
+  if(failRoll < lvl.fail) {
+    toast('Fehlschlag!', `$${fmt(amount)} verloren — Behörden haben eingegriffen!`, true);
+    gainXP(10);
+    if(svc.cooldown > 0) startCooldown(Math.floor(svc.cooldown/2));
+    return;
+  }
+
+  const fee = Math.floor(amount * svc.fee);
+  const afterFee = amount - fee;
+  const frakCut = Math.floor(afterFee * frakBase);
+  const you = afterFee - frakCut;
+  const dur = svc.cooldown > 0 ? Math.max(10000, Math.floor(amount/10000)*1000) : 3000;
+
+  const id = Date.now();
+  activeWashes.push({ id, amount, you, frakCut, dur, start:Date.now() });
+  document.getElementById('ad-active').textContent = activeWashes.length;
+  renderActive();
+  toast('Gestartet', `Waschvorgang für ${fmt(amount)} Items gestartet!`);
+  gainXP(Math.floor(amount/1000)*5 + 50);
+  if(svc.cooldown > 0) startCooldown(svc.cooldown);
+
+  setTimeout(() => {
+    const idx = activeWashes.findIndex(w=>w.id===id);
+    if(idx !== -1) {
+      activeWashes.splice(idx,1);
+      readyWashes.push({ id, you, frakCut, amount });
+      clean += frakCut;
+      updateHeader();
+      renderActive();
+      renderReady();
+      document.getElementById('ad-active').textContent = activeWashes.length;
+      toast('Fertig!', `${fmt(you)} Items bereit zur Abholung!`);
+    }
+  }, dur);
+}
+
+function gainXP(xp) {
+  playerXP += xp;
+  const next = LEVELS[playerLvl];
+  if(next && playerXP >= next.xp) {
+    playerLvl++;
+    toast('Level Up!', `Du bist jetzt Level ${playerLvl}: ${LEVELS[playerLvl-1].title}!`);
+  }
+  updateLevelUI();
+}
+
+function collect(id) {
+  const idx = readyWashes.findIndex(w=>w.id===id);
+  if(idx === -1) return;
+  const w = readyWashes[idx];
+  readyWashes.splice(idx,1);
+  clean += w.you;
+  updateHeader();
+  renderReady();
+  toast('Abgeholt', `${fmt(w.you)} Clean Money wurde dem Inventory hinzugefügt!`);
+}
+
+// ==================== RENDER ACTIVE ====================
+function renderActive() {
+  const el = document.getElementById('active-list');
+  if(!activeWashes.length) { el.innerHTML = '<div class="empty"><div class="e-icon">⏳</div>Keine aktiven Vorgänge.</div>'; return; }
+  el.innerHTML = '';
+  activeWashes.forEach(w => {
+    const div = document.createElement('div');
+    div.className = 'process-item';
+    div.id = 'proc-'+w.id;
+    const pct = Math.min(100, (Date.now()-w.start)/w.dur*100).toFixed(0);
+    const rem = Math.max(0, Math.ceil((w.dur-(Date.now()-w.start))/1000));
+    div.innerHTML = `
+      <div class="pi-icon">⏳</div>
+      <div class="pi-info">
+        <div class="pi-name">${fmt(w.amount)} Items werden gewaschen</div>
+        <div class="pi-sub">Erhältst: ${fmt(w.you)} | Frak: ${fmt(w.frakCut)}</div>
+        <div class="pi-bar"><div class="pi-fill" id="pf-${w.id}" style="width:${pct}%"></div></div>
+      </div>
+      <div class="pi-timer" id="pt-${w.id}">${rem}s</div>
+    `;
+    el.appendChild(div);
+    const iv = setInterval(() => {
+      const e2 = Date.now()-w.start;
+      const p2 = Math.min(100,(e2/w.dur*100)).toFixed(0);
+      const r2 = Math.max(0,Math.ceil((w.dur-e2)/1000));
+      const pf = document.getElementById('pf-'+w.id);
+      const pt = document.getElementById('pt-'+w.id);
+      if(pf) pf.style.width = p2+'%';
+      if(pt) pt.textContent = r2+'s';
+      if(r2<=0) clearInterval(iv);
+    }, 300);
+  });
+}
+
+function renderReady() {
+  const el = document.getElementById('ready-list');
+  if(!readyWashes.length) { el.innerHTML = '<div class="empty"><div class="e-icon">🪙</div>Kein Geld bereit.</div>'; return; }
+  el.innerHTML = '';
+  readyWashes.forEach(w => {
+    const div = document.createElement('div');
+    div.className = 'process-item';
+    div.style.borderColor = 'rgba(0,230,118,0.2)';
+    div.innerHTML = `
+      <div class="pi-icon">✅</div>
+      <div class="pi-info">
+        <div class="pi-name">${fmt(w.you)} Clean Money bereit</div>
+        <div class="pi-sub">Original: ${fmt(w.amount)} Schmutzgeld</div>
+      </div>
+      <button class="collect-btn show" onclick="collect(${w.id})">Abholen</button>
+    `;
+    el.appendChild(div);
+  });
+}
+
+// ==================== COOLDOWN ====================
+function startCooldown(secs) {
+  cdTotal = secs; cdRemain = secs;
+  document.getElementById('cd-card').classList.add('visible');
+  document.getElementById('wash-btn').disabled = true;
+  if(cdInterval) clearInterval(cdInterval);
+  cdInterval = setInterval(() => {
+    cdRemain--;
+    const pct = (1 - cdRemain/cdTotal)*100;
+    document.getElementById('cd-fill').style.width = pct+'%';
+    const m = Math.floor(cdRemain/60);
+    const s = cdRemain%60;
+    document.getElementById('cd-timer').textContent = `${m}:${s.toString().padStart(2,'0')}`;
+    if(cdRemain <= 0) {
+      clearInterval(cdInterval);
+      document.getElementById('cd-card').classList.remove('visible');
+      document.getElementById('wash-btn').disabled = false;
+      toast('Bereit', 'Cooldown abgelaufen — du kannst wieder waschen!');
+    }
+  }, 1000);
+}
+
+// ==================== TABS ====================
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+}
+
+// ==================== ADMIN ====================
+function toggleAdmin(on) {
+  isAdmin = on;
+  document.getElementById('admin-tab').style.display = on ? 'inline-flex' : 'none';
+  if(!on) switchTab('waschen', document.querySelector('.tab-btn'));
+  toast(on?'Admin AN':'Admin AUS', on?'Admin-Panel aktiviert.':'Admin-Panel deaktiviert.', !on);
+}
+
+// ==================== DEMO ====================
+function applyDemo() {
+  dirty = parseInt(document.getElementById('demo-dirty').value) || 0;
+  clean = parseInt(document.getElementById('demo-clean').value) || 0;
+  feeBase = (parseInt(document.getElementById('demo-fee').value)||20)/100;
+  frakBase = (parseInt(document.getElementById('demo-frak').value)||10)/100;
+  updateHeader();
+  updateLiveBanner();
+  updateCalc();
+  toast('Demo', 'Werte gesetzt!');
+}
+
+// ==================== TOAST ====================
+function toast(title, msg, err=false) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-title').textContent = title;
+  document.getElementById('toast-msg').textContent = msg;
+  t.className = 'toast' + (err?' err':'') + ' show';
+  clearTimeout(t._to);
+  t._to = setTimeout(()=>t.classList.remove('show'), 4000);
+}
+
+init();
+</script>
+</body>
+</html>

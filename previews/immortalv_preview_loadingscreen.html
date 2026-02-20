@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ImmortalV Loadingscreen v2</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  overflow:hidden;
+  background:#000;
+  color:#fff;
+}
+
+/* ─── VIDEO BACKGROUND ─── */
+.video-bg{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  overflow:hidden;
+  pointer-events:none;
+  background:#000510;
+}
+/* Thumbnail-Fallback wenn YouTube blockiert */
+.video-bg::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background-image:url('https://i.ytimg.com/vi/YUiQ6X3ari0/maxresdefault.jpg');
+  background-size:cover;
+  background-position:center;
+  opacity:0;
+  transition:opacity 1.5s ease;
+  transform:scale(1.05);
+}
+.video-bg.thumb-loaded::before{
+  opacity:.45;
+}
+.video-bg iframe{
+  position:absolute;
+  top:50%;left:50%;
+  width:177.78vh;height:100vh;
+  min-width:100vw;min-height:56.25vw;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+  opacity:0;
+  transition:opacity 1.5s ease;
+}
+.video-bg.yt-ok iframe{
+  opacity:1;
+}
+.video-bg.yt-ok::before{
+  opacity:0;
+}
+
+/* ─── OVERLAY ─── */
+.video-overlay{
+  position:fixed;inset:0;
+  background:
+    linear-gradient(to bottom,rgba(0,0,0,.7) 0%,rgba(0,0,0,.2) 35%,rgba(0,0,0,.2) 65%,rgba(0,0,0,.8) 100%);
+  z-index:1;pointer-events:none;
+}
+
+/* ─── AMBIENT ─── */
+.ambient{position:fixed;inset:0;z-index:2;pointer-events:none}
+.ambient::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 15% 25%,rgba(0,219,255,.13) 0%,transparent 55%),
+    radial-gradient(ellipse at 85% 75%,rgba(0,168,204,.10) 0%,transparent 55%),
+    radial-gradient(ellipse at 50% 10%,rgba(0,219,255,.07) 0%,transparent 40%);
+  animation:ambientPulse 12s ease-in-out infinite;
+}
+@keyframes ambientPulse{0%,100%{opacity:.7}50%{opacity:1}}
+
+/* ─── GRID ─── */
+.grid{
+  position:fixed;inset:0;
+  background:
+    linear-gradient(90deg,rgba(0,219,255,.025) 1px,transparent 1px),
+    linear-gradient(rgba(0,219,255,.025) 1px,transparent 1px);
+  background-size:60px 60px;
+  z-index:2;animation:gridDrift 25s linear infinite;pointer-events:none;
+}
+@keyframes gridDrift{from{background-position:0 0}to{background-position:60px 60px}}
+
+/* ─── PARTICLES ─── */
+.particles{position:fixed;inset:0;z-index:3;pointer-events:none}
+.particle{
+  position:absolute;border-radius:50%;
+  background:#00dbff;box-shadow:0 0 6px rgba(0,219,255,.9);
+  animation:floatUp linear infinite;opacity:0;
+}
+@keyframes floatUp{
+  0%{transform:translateY(105vh) translateX(0);opacity:0}
+  8%{opacity:.7}92%{opacity:.7}
+  100%{transform:translateY(-10vh) translateX(60px);opacity:0}
+}
+
+/* ─── VERSION TAG ─── */
+.version-tag{
+  position:fixed;top:28px;left:28px;z-index:100;
+  font-size:11px;font-weight:700;letter-spacing:2px;
+  color:rgba(0,219,255,.65);
+  background:rgba(10,18,35,.65);
+  border:1px solid rgba(0,219,255,.15);
+  padding:6px 14px;border-radius:20px;
+  backdrop-filter:blur(10px);
+  animation:fadeLeft .9s ease .5s both;
+}
+
+/* ─── DISCORD ─── */
+.corner-discord{
+  position:fixed;top:28px;right:28px;z-index:100;
+  animation:fadeRight .9s ease 1s both;
+}
+.discord-btn{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 20px;
+  background:rgba(88,101,242,.25);backdrop-filter:blur(20px);
+  border:1px solid rgba(88,101,242,.45);border-radius:50px;
+  color:#fff;font-size:13px;font-weight:700;text-decoration:none;
+  transition:all .3s;box-shadow:0 4px 20px rgba(0,0,0,.4);
+}
+.discord-btn svg{width:20px;height:20px;fill:#fff;flex-shrink:0}
+.discord-btn:hover{
+  background:rgba(88,101,242,.5);border-color:rgba(88,101,242,.9);
+  transform:translateY(-2px);box-shadow:0 8px 28px rgba(88,101,242,.4);
+}
+
+/* ─── YOUTUBE PREVIEW ─── */
+.corner-yt{
+  position:fixed;bottom:28px;right:28px;z-index:100;
+  animation:fadeRight .9s ease 1.3s both;
+}
+.yt-preview{
+  display:flex;align-items:center;gap:12px;
+  background:rgba(10,18,35,.82);backdrop-filter:blur(20px);
+  border:1px solid rgba(255,0,0,.28);border-radius:14px;
+  padding:10px 16px;text-decoration:none;color:#fff;
+  transition:all .3s;box-shadow:0 4px 24px rgba(0,0,0,.6);
+  max-width:275px;
+}
+.yt-preview:hover{
+  border-color:rgba(255,0,0,.65);background:rgba(255,0,0,.09);
+  transform:translateY(-3px);box-shadow:0 10px 32px rgba(255,0,0,.2);
+}
+.yt-thumb{
+  width:80px;height:50px;border-radius:8px;overflow:hidden;
+  flex-shrink:0;position:relative;background:#111;
+}
+.yt-thumb img{width:100%;height:100%;object-fit:cover;display:none}
+.yt-thumb-ph{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#1a0505,#0a0000);
+}
+.yt-play-btn{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.25);
+}
+.yt-play-btn svg{width:22px;height:22px}
+.yt-info{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+.yt-label{
+  font-size:9px;font-weight:800;letter-spacing:2px;
+  text-transform:uppercase;color:#ff4444;
+}
+.yt-title{
+  font-size:12px;font-weight:700;color:#fff;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:155px;
+}
+.yt-author{font-size:10px;color:rgba(255,255,255,.4)}
+
+/* ─── RULES ─── */
+.corner-rules{
+  position:fixed;bottom:28px;left:28px;z-index:100;
+  animation:fadeLeft .9s ease 1.3s both;
+}
+.rules-box{
+  background:rgba(10,18,35,.82);backdrop-filter:blur(20px);
+  border:1px solid rgba(0,219,255,.16);border-radius:14px;
+  padding:15px 20px;max-width:295px;
+}
+.rules-head{
+  font-size:10px;font-weight:800;letter-spacing:3px;
+  color:#00dbff;text-transform:uppercase;margin-bottom:10px;
+  display:flex;align-items:center;gap:8px;
+}
+.rules-head::before{
+  content:'';display:block;width:3px;height:12px;
+  background:#00dbff;border-radius:2px;box-shadow:0 0 8px #00dbff;
+}
+.rules-list{list-style:none}
+.rules-list li{
+  padding:3px 0 3px 15px;position:relative;
+  font-size:11px;color:rgba(255,255,255,.62);line-height:1.5;
+}
+.rules-list li::before{
+  content:'›';position:absolute;left:0;
+  color:#00dbff;font-weight:900;font-size:15px;line-height:1.3;
+}
+
+/* ─── MAIN CONTAINER ─── */
+/* padding-top/bottom verhindert Überlappung mit Corner-Widgets */
+.container{
+  position:fixed;inset:0;z-index:10;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:90px 40px 150px;
+  gap:28px;
+}
+
+/* ─── LOGO ─── */
+.logo-wrap{
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  animation:fadeDown .9s ease;
+}
+.logo-badge{
+  font-size:10px;font-weight:800;letter-spacing:6px;text-transform:uppercase;
+  color:rgba(0,219,255,.8);border:1px solid rgba(0,219,255,.3);
+  padding:4px 16px;border-radius:20px;
+  background:rgba(0,219,255,.07);backdrop-filter:blur(6px);
+}
+.logo-text{
+  font-size:clamp(56px,9vw,108px);
+  font-weight:900;letter-spacing:-4px;line-height:1;
+  background:linear-gradient(135deg,#00dbff 0%,#fff 45%,#00dbff 100%);
+  background-size:200% 200%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:shimmer 4s ease-in-out infinite;
+  filter:drop-shadow(0 0 35px rgba(0,219,255,.55));
+}
+@keyframes shimmer{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.logo-sub{
+  font-size:18px;font-weight:700;letter-spacing:10px;text-transform:uppercase;
+  color:rgba(255,255,255,.7);animation:glowPulse 3s ease-in-out infinite;
+}
+@keyframes glowPulse{
+  0%,100%{text-shadow:0 0 15px rgba(0,219,255,.35);opacity:.65}
+  50%{text-shadow:0 0 35px rgba(0,219,255,.85);opacity:1}
+}
+
+/* ─── LOADING BAR ─── */
+.loading-wrap{
+  width:100%;max-width:560px;
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  animation:fadeUp .9s ease .4s both;
+}
+.loading-status{
+  font-size:11px;font-weight:700;letter-spacing:3px;
+  text-transform:uppercase;color:rgba(0,219,255,.8);
+}
+.bar-outer{
+  width:100%;height:5px;
+  background:rgba(0,219,255,.08);border-radius:20px;overflow:hidden;position:relative;
+}
+.bar-inner{
+  position:absolute;left:0;top:0;height:100%;
+  background:linear-gradient(90deg,#00a8cc,#00dbff,#00ffea);background-size:200% 100%;
+  border-radius:20px;
+  box-shadow:0 0 16px rgba(0,219,255,.9),0 0 32px rgba(0,219,255,.4);
+  animation:barShimmer 2s linear infinite;transition:width .3s ease;width:0%;
+}
+@keyframes barShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.bar-outer::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent 40%,rgba(255,255,255,.15) 50%,transparent 60%);
+  animation:scanLine 2.5s linear infinite;border-radius:20px;
+}
+@keyframes scanLine{from{transform:translateX(-200%)}to{transform:translateX(200%)}}
+.percent{
+  font-size:28px;font-weight:900;color:#00dbff;
+  font-variant-numeric:tabular-nums;
+  text-shadow:0 0 22px rgba(0,219,255,.8);
+}
+
+/* ─── INFO CARDS ─── */
+.cards{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:14px;width:100%;max-width:860px;
+  animation:fadeUp .9s ease .7s both;
+}
+.card{
+  background:rgba(10,18,35,.6);backdrop-filter:blur(18px);
+  border:1px solid rgba(0,219,255,.14);border-radius:16px;
+  padding:16px 12px;text-align:center;
+  position:relative;overflow:hidden;
+  transition:transform .3s,border-color .3s,box-shadow .3s;
+}
+.card::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,#00dbff,transparent);
+  opacity:0;transition:opacity .3s;
+}
+.card:hover{transform:translateY(-4px);border-color:rgba(0,219,255,.45);box-shadow:0 10px 32px rgba(0,219,255,.18)}
+.card:hover::after{opacity:1}
+.card-icon{font-size:28px;margin-bottom:8px;filter:drop-shadow(0 0 8px rgba(0,219,255,.5))}
+.card-label{font-size:9px;font-weight:800;color:#00dbff;letter-spacing:3px;text-transform:uppercase;margin-bottom:5px}
+.card-value{font-size:12px;color:rgba(255,255,255,.65);line-height:1.4}
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeDown{from{opacity:0;transform:translateY(-25px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(25px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeLeft{from{opacity:0;transform:translateX(-25px)}to{opacity:1;transform:translateX(0)}}
+@keyframes fadeRight{from{opacity:0;transform:translateX(25px)}to{opacity:1;transform:translateX(0)}}
+
+@media(max-width:960px){.cards{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.logo-text{font-size:48px}.corner-yt,.corner-rules{display:none}}
+</style>
+</head>
+<body>
+
+<!-- VIDEO BACKGROUND -->
+<div class="video-bg" id="videoBg">
+  <iframe
+    id="ytPlayer"
+    src="https://www.youtube.com/embed/YUiQ6X3ari0?autoplay=1&mute=1&loop=1&playlist=YUiQ6X3ari0&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3&disablekb=1"
+    frameborder="0"
+    allow="autoplay; encrypted-media"
+    allowfullscreen>
+  </iframe>
+</div>
+<div class="video-overlay"></div>
+<div class="ambient"></div>
+<div class="grid"></div>
+<div class="particles" id="particles"></div>
+
+<!-- VERSION -->
+<div class="version-tag">v2.0 · IMMORTAL V</div>
+
+<!-- DISCORD -->
+<div class="corner-discord">
+  <a href="https://discord.gg/immortal-v" class="discord-btn" target="_blank">
+    <svg viewBox="0 0 71 55" xmlns="http://www.w3.org/2000/svg">
+      <path d="M60.1 4.9A58.5 58.5 0 0 0 45.4.8a.2.2 0 0 0-.2.1 40.8 40.8 0 0 0-1.8 3.7 54 54 0 0 0-16.2 0A37.7 37.7 0 0 0 25.4.9a.2.2 0 0 0-.2-.1A58.4 58.4 0 0 0 10.5 5a.2.2 0 0 0-.1.1C1.5 18.7-.9 32-.5 45c0 .1.1.1.1.2a58.8 58.8 0 0 0 17.7 9 .2.2 0 0 0 .2-.1 42 42 0 0 0 3.6-5.9.2.2 0 0 0-.1-.3 38.7 38.7 0 0 1-5.5-2.6.2.2 0 0 1 0-.4 30.9 30.9 0 0 0 .6-.5.2.2 0 0 1 .2 0c11.5 5.3 24 5.3 35.4 0a.2.2 0 0 1 .2 0l.6.5a.2.2 0 0 1 0 .4 36 36 0 0 1-5.5 2.6.2.2 0 0 0-.1.3 47 47 0 0 0 3.6 5.9.2.2 0 0 0 .2.1 58.6 58.6 0 0 0 17.8-9 .2.2 0 0 0 .1-.2c1.5-15.3-2.5-28.5-10.6-40.2a.2.2 0 0 0-.1 0ZM23.7 37.3c-3.5 0-6.4-3.2-6.4-7.2s2.8-7.2 6.4-7.2c3.6 0 6.5 3.2 6.4 7.2 0 4-2.8 7.2-6.4 7.2Zm23.7 0c-3.5 0-6.4-3.2-6.4-7.2s2.8-7.2 6.4-7.2c3.6 0 6.5 3.2 6.4 7.2 0 4-2.8 7.2-6.4 7.2Z"/>
+    </svg>
+    Discord beitreten
+  </a>
+</div>
+
+<!-- YOUTUBE PREVIEW -->
+<div class="corner-yt">
+  <a href="https://www.youtube.com/watch?v=YUiQ6X3ari0" class="yt-preview" target="_blank">
+    <div class="yt-thumb">
+      <img id="ytThumb" src="" alt="">
+      <div class="yt-thumb-ph" id="ytThumbPh">
+        <svg viewBox="0 0 68 48" xmlns="http://www.w3.org/2000/svg" style="width:28px;opacity:.25">
+          <path fill="#fff" d="M66.5 7.7a8.5 8.5 0 0 0-6-6C56.2 0 34 0 34 0S11.8 0 7.5 1.6a8.5 8.5 0 0 0-6 6.1C0 11.9 0 24 0 24s0 12.1 1.5 16.3a8.5 8.5 0 0 0 6 6C11.8 48 34 48 34 48s22.2 0 26.5-1.6a8.5 8.5 0 0 0 6-6C68 36.1 68 24 68 24s0-12.1-1.5-16.3Z"/>
+          <path d="M45 24 27 14v20Z" fill="#666"/>
+        </svg>
+      </div>
+      <div class="yt-play-btn">
+        <svg viewBox="0 0 68 48" xmlns="http://www.w3.org/2000/svg">
+          <path fill="#ff0000" d="M66.5 7.7a8.5 8.5 0 0 0-6-6C56.2 0 34 0 34 0S11.8 0 7.5 1.6a8.5 8.5 0 0 0-6 6.1C0 11.9 0 24 0 24s0 12.1 1.5 16.3a8.5 8.5 0 0 0 6 6C11.8 48 34 48 34 48s22.2 0 26.5-1.6a8.5 8.5 0 0 0 6-6C68 36.1 68 24 68 24s0-12.1-1.5-16.3Z"/>
+          <path d="M45 24 27 14v20Z" fill="#fff"/>
+        </svg>
+      </div>
+    </div>
+    <div class="yt-info">
+      <span class="yt-label">▶ Jetzt schauen</span>
+      <span class="yt-title" id="ytTitle">Lädt...</span>
+      <span class="yt-author" id="ytAuthor">YouTube</span>
+    </div>
+  </a>
+</div>
+
+<!-- RULES -->
+<div class="corner-rules">
+  <div class="rules-box">
+    <div class="rules-head">Server Regeln</div>
+    <ul class="rules-list">
+      <li>Respektiere alle Spieler</li>
+      <li>Kein RDM / VDM erlaubt</li>
+      <li>RP-Namen sind Pflicht</li>
+      <li>Im Discord registrieren</li>
+      <li>Viel Spaß auf ImmortalV! 🎮</li>
+    </ul>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+  <div class="logo-wrap">
+    <div class="logo-badge">FiveM Roleplay Server</div>
+    <div class="logo-text">IMMORTAL V</div>
+    <div class="logo-sub">Roleplay</div>
+  </div>
+  <div class="loading-wrap">
+    <div class="loading-status" id="statusText">Verbindung wird hergestellt...</div>
+    <div class="bar-outer"><div class="bar-inner" id="loadBar"></div></div>
+    <div class="percent" id="loadPercent">0%</div>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-icon">👥</div>
+      <div class="card-label">Spieler</div>
+      <div class="card-value" id="cardPlayers">Lädt...</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🗺️</div>
+      <div class="card-label">Map</div>
+      <div class="card-value">Los Santos</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🎮</div>
+      <div class="card-label">Framework</div>
+      <div class="card-value">ESX</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">💬</div>
+      <div class="card-label">Discord</div>
+      <div class="card-value">discord.gg/immortal-v</div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── PARTICLES ── */
+(function(){
+  const w=document.getElementById('particles');
+  for(let i=0;i<55;i++){
+    const p=document.createElement('div');
+    p.className='particle';
+    const s=Math.random()*2+1;
+    p.style.cssText='width:'+s+'px;height:'+s+'px;left:'+Math.random()*100+'%;'
+      +'animation-duration:'+(Math.random()*12+10)+'s;animation-delay:'+Math.random()*10+'s;';
+    w.appendChild(p);
+  }
+})();
+
+/* ── VIDEO BACKGROUND FALLBACK ──
+   Wenn YouTube "Fehler 153" zeigt (iframe nicht erlaubt),
+   fällt das Design auf das Video-Thumbnail als Hintergrundbild zurück.
+   Das Thumbnail wird über i.ytimg.com geladen und per CSS eingeblendet.
+*/
+(function(){
+  const bg=document.getElementById('videoBg');
+  const iframe=document.getElementById('ytPlayer');
+  const VID='YUiQ6X3ari0';
+
+  // Thumbnail vorladen (zeigt sofort als Fallback)
+  const img=new Image();
+  img.onload=function(){ bg.classList.add('thumb-loaded'); };
+  img.src='https://i.ytimg.com/vi/'+VID+'/maxresdefault.jpg';
+
+  // YouTube API Nachrichten abhören
+  let ytLive=false;
+  window.addEventListener('message',function(e){
+    try{
+      const d=JSON.parse(e.data);
+      // YT sendet onReady oder playerState=1 (playing)
+      if(d.event==='onReady'||(d.info&&d.info.playerState===1)){
+        ytLive=true;
+        bg.classList.add('yt-ok');
+      }
+    }catch(x){}
+  });
+
+  // Nach 4.5s: wenn kein YT-Signal → iframe verbergen, Thumbnail bleibt
+  setTimeout(function(){
+    if(!ytLive){
+      iframe.style.display='none';
+      // Thumbnail sicherstellen
+      bg.classList.add('thumb-loaded');
+    }
+  },4500);
+})();
+
+/* ── LOADING PROGRESS ── */
+const loadBar=document.getElementById('loadBar');
+const loadPct=document.getElementById('loadPercent');
+const statusText=document.getElementById('statusText');
+const messages=[
+  'Verbindung wird hergestellt...',
+  'Lade Map-Assets...',
+  'Synchronisiere Spielerdaten...',
+  'Lade Scripts...',
+  'Initialisiere Welt...',
+  'ESX Framework lädt...',
+  'Optimiere Performance...',
+  'Fast fertig...',
+  '✨ Willkommen auf ImmortalV!'
+];
+let progress=0;
+function animateBar(){
+  if(progress>=100){
+    loadBar.style.width='100%';loadPct.textContent='100%';
+    statusText.textContent=messages[messages.length-1];return;
+  }
+  const sp=progress<60?Math.random()*2.5:Math.random()*1.2;
+  progress=Math.min(100,progress+sp);
+  loadBar.style.width=progress+'%';
+  loadPct.textContent=Math.floor(progress)+'%';
+  const idx=Math.min(Math.floor(progress/(100/(messages.length-1))),messages.length-2);
+  statusText.textContent=messages[idx];
+  setTimeout(animateBar,80+Math.random()*60);
+}
+setTimeout(animateBar,1000);
+
+/* ── FiveM Real Progress ── */
+window.addEventListener('message',function(e){
+  try{
+    const d=e.data;
+    if(d.eventName==='loadProgress'){
+      progress=d.loadFraction*100;
+      loadBar.style.width=progress+'%';
+      loadPct.textContent=Math.floor(progress)+'%';
+    }
+    if(d.eventName==='startLoad'){progress=0;loadBar.style.width='0%';}
+  }catch(x){}
+});
+
+/* ── YOUTUBE oEMBED: THUMBNAIL + TITEL + AUTHOR ── */
+(function(){
+  const VID='YUiQ6X3ari0';
+  const titleEl=document.getElementById('ytTitle');
+  const authorEl=document.getElementById('ytAuthor');
+  const thumbEl=document.getElementById('ytThumb');
+  const phEl=document.getElementById('ytThumbPh');
+
+  function applyThumb(src){
+    thumbEl.onload=function(){
+      thumbEl.style.display='block';
+      if(phEl)phEl.style.display='none';
+    };
+    thumbEl.src=src;
+  }
+
+  fetch('https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v='+VID+'&format=json')
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(titleEl&&d.title)     titleEl.textContent=d.title;
+      if(authorEl&&d.author_name) authorEl.textContent=d.author_name;
+      applyThumb(d.thumbnail_url
+        ?d.thumbnail_url.replace('hqdefault','mqdefault')
+        :'https://i.ytimg.com/vi/'+VID+'/mqdefault.jpg');
+    })
+    .catch(function(){
+      if(titleEl)titleEl.textContent='ImmortalV – Jetzt ansehen';
+      applyThumb('https://i.ytimg.com/vi/'+VID+'/mqdefault.jpg');
+    });
+})();
+
+/* ── PLAYER COUNT ── */
+const cp=document.getElementById('cardPlayers');
+function upP(){cp.textContent=(Math.floor(Math.random()*40)+110)+' / 150 Online';}
+upP();setInterval(upP,6000);
+</script>
+</body>
+</html>
