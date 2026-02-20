@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Engels | FiveM Developer</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --red: #ff1a1a;
+    --dark: #0d0d0d;
+    --card: #141414;
+    --text: #e6e6e6;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--dark);
+    font-family: 'Rajdhani', sans-serif;
+    color: var(--text);
+}
+
+/* Header */
+header {
+    text-align: center;
+    padding: 80px 20px 60px;
+    background: radial-gradient(circle at top, rgba(255,0,0,0.25), transparent 60%);
+}
+
+header img {
+    max-width: 220px;
+    filter: drop-shadow(0 0 20px var(--red));
+}
+
+header h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 36px;
+    margin: 20px 0 10px;
+    color: var(--red);
+}
+
+header p {
+    font-size: 18px;
+    max-width: 700px;
+    margin: auto;
+    line-height: 1.6;
+}
+
+/* Sections */
+section {
+    max-width: 1000px;
+    margin: 60px auto;
+    padding: 40px 20px;
+}
+
+h2 {
+    font-family: 'Orbitron', sans-serif;
+    color: var(--red);
+    margin-bottom: 30px;
+}
+
+/* Cards */
+.card {
+    background: var(--card);
+    padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 25px;
+    border: 1px solid rgba(255,0,0,0.3);
+    transition: 0.3s;
+}
+
+.card:hover {
+    box-shadow: 0 0 30px rgba(255,0,0,0.4);
+}
+
+/* Skills Grid */
+.skills {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+    gap: 20px;
+}
+
+.skill-item {
+    background: var(--card);
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,0,0,0.2);
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 40px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    margin-top: 80px;
+}
+
+a {
+    color: var(--red);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <img src="assets/logo.png" alt="Engels Logo">
+    <h1>Engels – FiveM Developer</h1>
+    <p>
+        Spezialisierter FiveM Entwickler mit Fokus auf saubere Systemarchitektur,
+        Performance-Optimierung und stabile RP-Server-Umgebungen.
+        Erfahrung in Lua, ESX, QBCore, MySQL und Linux-Serververwaltung.
+    </p>
+</header>
+
+<section>
+    <h2>👨‍💻 Über mich</h2>
+    <div class="card">
+        Ich entwickle strukturierte, wartbare und performante FiveM-Systeme.
+        Mein Fokus liegt nicht nur auf Features, sondern auf langfristiger Stabilität,
+        sauberem Code und Exploit-Sicherheit.
+        Ich arbeite lösungsorientiert, effizient und mit klarem Blick auf
+        Performance im Live-Betrieb.
+    </div>
+</section>
+
+<section>
+    <h2>⚙️ Tech Stack</h2>
+    <div class="skills">
+        <div class="skill-item">Lua (Client & Server)</div>
+        <div class="skill-item">ESX / QBCore</div>
+        <div class="skill-item">MySQL & Datenbankdesign</div>
+        <div class="skill-item">Performance-Optimierung</div>
+        <div class="skill-item">Exploit Prevention</div>
+        <div class="skill-item">Linux Server Management</div>
+    </div>
+</section>
+
+<section>
+    <h2>🚀 Projekte & Script-Previews</h2>
+
+    <div class="card">
+        <strong>Custom System #1</strong><br>
+        Individuelles Server-System mit Fokus auf Performance,
+        saubere Event-Logik und Datenbankeffizienz.
+    </div>
+
+    <div class="card">
+        <strong>Custom System #2</strong><br>
+        Erweiterbares Fraktions-/Job-System mit modularer Struktur.
+    </div>
+
+    <div class="card">
+        <strong>Custom System #3</strong><br>
+        Admin- & Logging-System mit Sicherheitsmechanismen.
+    </div>
+
+</section>
+
+<section>
+    <h2>🎯 Ziel</h2>
+    <div class="card">
+        Aufbau und Mitentwicklung stabiler, langfristiger FiveM-Projekte
+        mit klarem technischen Fundament und sauberer Struktur.
+    </div>
+</section>
+
+<footer>
+    © 2026 Engels | FiveM Developer<br>
+    GitHub: <a href="https://github.com/DEIN-GITHUB-NAME" target="_blank">github.com/DEIN-GITHUB-NAME</a>
+</footer>
+
+</body>
+</html>
