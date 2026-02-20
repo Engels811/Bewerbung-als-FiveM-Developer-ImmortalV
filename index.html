@@ -4,182 +4,91 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Engels | FiveM Developer</title>
-
+<link rel="stylesheet" href="css/style.css">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
-
-<style>
-:root {
-    --red: #ff1a1a;
-    --dark: #0d0d0d;
-    --card: #141414;
-    --text: #e6e6e6;
-}
-
-* {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    background: var(--dark);
-    font-family: 'Rajdhani', sans-serif;
-    color: var(--text);
-}
-
-/* Header */
-header {
-    text-align: center;
-    padding: 80px 20px 60px;
-    background: radial-gradient(circle at top, rgba(255,0,0,0.25), transparent 60%);
-}
-
-header img {
-    max-width: 220px;
-    filter: drop-shadow(0 0 20px var(--red));
-}
-
-header h1 {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 36px;
-    margin: 20px 0 10px;
-    color: var(--red);
-}
-
-header p {
-    font-size: 18px;
-    max-width: 700px;
-    margin: auto;
-    line-height: 1.6;
-}
-
-/* Sections */
-section {
-    max-width: 1000px;
-    margin: 60px auto;
-    padding: 40px 20px;
-}
-
-h2 {
-    font-family: 'Orbitron', sans-serif;
-    color: var(--red);
-    margin-bottom: 30px;
-}
-
-/* Cards */
-.card {
-    background: var(--card);
-    padding: 30px;
-    border-radius: 15px;
-    margin-bottom: 25px;
-    border: 1px solid rgba(255,0,0,0.3);
-    transition: 0.3s;
-}
-
-.card:hover {
-    box-shadow: 0 0 30px rgba(255,0,0,0.4);
-}
-
-/* Skills Grid */
-.skills {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
-    gap: 20px;
-}
-
-.skill-item {
-    background: var(--card);
-    padding: 20px;
-    border-radius: 12px;
-    border: 1px solid rgba(255,0,0,0.2);
-}
-
-/* Footer */
-footer {
-    text-align: center;
-    padding: 40px;
-    border-top: 1px solid rgba(255,255,255,0.1);
-    margin-top: 80px;
-}
-
-a {
-    color: var(--red);
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-</style>
 </head>
-
 <body>
 
 <header>
     <img src="assets/logo.png" alt="Engels Logo">
     <h1>Engels – FiveM Developer</h1>
-    <p>
-        Spezialisierter FiveM Entwickler mit Fokus auf saubere Systemarchitektur,
-        Performance-Optimierung und stabile RP-Server-Umgebungen.
-        Erfahrung in Lua, ESX, QBCore, MySQL und Linux-Serververwaltung.
-    </p>
+    <p>Performance-orientierte FiveM Systeme | ESX / QBCore | MySQL | Linux</p>
 </header>
 
-<section>
+<section class="about">
     <h2>👨‍💻 Über mich</h2>
     <div class="card">
         Ich entwickle strukturierte, wartbare und performante FiveM-Systeme.
-        Mein Fokus liegt nicht nur auf Features, sondern auf langfristiger Stabilität,
-        sauberem Code und Exploit-Sicherheit.
-        Ich arbeite lösungsorientiert, effizient und mit klarem Blick auf
-        Performance im Live-Betrieb.
+        Mein Fokus liegt auf sauberer Event-Architektur, Exploit-Sicherheit
+        und langfristiger Stabilität im Live-Betrieb.
     </div>
 </section>
 
 <section>
     <h2>⚙️ Tech Stack</h2>
-    <div class="skills">
-        <div class="skill-item">Lua (Client & Server)</div>
-        <div class="skill-item">ESX / QBCore</div>
-        <div class="skill-item">MySQL & Datenbankdesign</div>
-        <div class="skill-item">Performance-Optimierung</div>
-        <div class="skill-item">Exploit Prevention</div>
-        <div class="skill-item">Linux Server Management</div>
+    <div class="grid">
+        <div class="skill">Lua (Client & Server)</div>
+        <div class="skill">ESX / QBCore</div>
+        <div class="skill">MySQL</div>
+        <div class="skill">Performance Optimization</div>
+        <div class="skill">Exploit Prevention</div>
+        <div class="skill">Linux Server</div>
     </div>
 </section>
 
 <section>
-    <h2>🚀 Projekte & Script-Previews</h2>
+    <h2>🚀 ImmortalV Script Previews</h2>
+    <div class="projects">
 
-    <div class="card">
-        <strong>Custom System #1</strong><br>
-        Individuelles Server-System mit Fokus auf Performance,
-        saubere Event-Logik und Datenbankeffizienz.
-    </div>
+        <div class="card">
+            <h3>💰 Geldwäsche System</h3>
+            <a href="previews/immortalv_geldwaesche.html" target="_blank">Preview öffnen →</a>
+        </div>
 
-    <div class="card">
-        <strong>Custom System #2</strong><br>
-        Erweiterbares Fraktions-/Job-System mit modularer Struktur.
-    </div>
+        <div class="card">
+            <h3>💰 Geldwäsche V3</h3>
+            <a href="previews/immortalv_geldwaesche_v3.html" target="_blank">Preview öffnen →</a>
+        </div>
 
-    <div class="card">
-        <strong>Custom System #3</strong><br>
-        Admin- & Logging-System mit Sicherheitsmechanismen.
-    </div>
+        <div class="card">
+            <h3>💍 Marriage System</h3>
+            <a href="previews/immortalv_marriage_preview.html" target="_blank">Preview öffnen →</a>
+        </div>
 
-</section>
+        <div class="card">
+            <h3>🎒 Inventory</h3>
+            <a href="previews/immortalv_preview_inventory.html" target="_blank">Preview öffnen →</a>
+        </div>
 
-<section>
-    <h2>🎯 Ziel</h2>
-    <div class="card">
-        Aufbau und Mitentwicklung stabiler, langfristiger FiveM-Projekte
-        mit klarem technischen Fundament und sauberer Struktur.
+        <div class="card">
+            <h3>🖥️ Loading Screen</h3>
+            <a href="previews/immortalv_preview_loadingscreen.html" target="_blank">Preview öffnen →</a>
+        </div>
+
+        <div class="card">
+            <h3>📑 Report System</h3>
+            <a href="previews/immortalv_preview_report.html" target="_blank">Preview öffnen →</a>
+        </div>
+
+        <div class="card">
+            <h3>📻 Radio System</h3>
+            <a href="previews/immortalv_radio_preview.html" target="_blank">Preview öffnen →</a>
+        </div>
+
+        <div class="card">
+            <h3>♻️ Schrottplatz System</h3>
+            <a href="previews/immortalv_schrottplatz_preview.html" target="_blank">Preview öffnen →</a>
+        </div>
+
     </div>
 </section>
 
 <footer>
-    © 2026 Engels | FiveM Developer<br>
-    GitHub: <a href="https://github.com/DEIN-GITHUB-NAME" target="_blank">github.com/DEIN-GITHUB-NAME</a>
+    © 2026 Engels | FiveM Developer  
+    <br>
+    GitHub: <a href="https://github.com/DEINNAME" target="_blank">github.com/DEINNAME</a>
 </footer>
 
+<script src="js/main.js"></script>
 </body>
 </html>
