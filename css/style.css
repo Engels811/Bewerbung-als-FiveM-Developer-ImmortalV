@@ -1,0 +1,87 @@
+:root {
+    --red: #ff1a1a;
+    --dark: #0d0d0d;
+    --card: #151515;
+    --text: #e6e6e6;
+}
+
+body {
+    margin: 0;
+    font-family: 'Rajdhani', sans-serif;
+    background: var(--dark);
+    color: var(--text);
+}
+
+header {
+    text-align: center;
+    padding: 80px 20px;
+    background: radial-gradient(circle at top, rgba(255,0,0,0.2), transparent 60%);
+}
+
+header img {
+    max-width: 200px;
+    filter: drop-shadow(0 0 20px var(--red));
+}
+
+h1 {
+    font-family: 'Orbitron', sans-serif;
+    color: var(--red);
+}
+
+section {
+    max-width: 1100px;
+    margin: 60px auto;
+    padding: 20px;
+}
+
+h2 {
+    font-family: 'Orbitron', sans-serif;
+    color: var(--red);
+}
+
+.card {
+    background: var(--card);
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255,0,0,0.3);
+    transition: 0.3s;
+}
+
+.card:hover {
+    box-shadow: 0 0 25px rgba(255,0,0,0.5);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+    gap: 20px;
+}
+
+.skill {
+    background: var(--card);
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,0,0,0.2);
+}
+
+.projects {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
+    gap: 20px;
+}
+
+footer {
+    text-align: center;
+    padding: 40px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+a {
+    color: var(--red);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
